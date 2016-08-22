@@ -1,59 +1,61 @@
-<!DOCTYPE html>
+	<!DOCTYPE html>
 
-<html>
+	<html>
 
-<head>
+	<head>
 
-<link rel="stylesheet" href="E:\nodejsProject\dt-project\main.css" />
+		<link rel="stylesheet" href="main.css" />
 
-<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+		<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
 
-<script src="E:\nodejsProject\dt-project\main.js"></script> 
+		<script src="main.js"></script> 
 
-</head>
+	</head>
 
-<body>
+	<body>
 
-<div class="container">
+		<div class="container">
 
-	<div class="left" id="leftDiv">
+			<div class="headerDiv"></div>
 
-		<input type="button" id="myBtn1" value="Application1" class="button" onclick="javascript:divCenterToggle('myBtn1','centerDiv');"/>
+			<div class="contentDiv">
 
-		<input type="button" id="myBtn2" value="Application2" class="button" onclick="javascript:divCenterToggle('myBtn2','centerDiv');"/>
+				<div class="left" id="leftDiv">
 
-		<input type="button" id="myBtn3" value="Application3" class="button" onclick="javascript:divCenterToggle('myBtn3','centerDiv');"/>
+					<br>
 
-	</div>
+					<input type="button" id="myBtn1" value="Application1" class="button" onclick="javascript:divCenterToggle('myBtn1','centerDiv');"/>
 
-	<div class="center" id="centerDiv"></div>
+					<br><br>
 
-	<div class="right" id="rightDiv" >	
-	
-		<div id="title_bar">
-		
-			<div id="button">-</div>
-			
+					<input type="button" id="myBtn2" value="Application2" class="button" onclick="javascript:divCenterToggle('myBtn2','centerDiv');"/>
+
+					<br><br>
+
+					<input type="button" id="myBtn3" value="Application3" class="button" onclick="javascript:divCenterToggle('myBtn3','centerDiv');"/>
+
+					<br>
+
+				</div>
+
+				<div class="center" id="centerDiv"></div>
+
+				<div class="right" id="rightDiv" >	
+					
+					<div id="title_bar">
+						
+						<div id="button">-</div>
+						
+					</div>
+
+					<div id="box"></div>
+					
+				</div>
+
+			</div>
+
 		</div>
 
-		<div id="box"></div>
-	
-	</div>
+	</body>
 
-</div>
-
-<script>
-$("#button").click(function(){
-    if($(this).html() == "-"){
-        $(this).html("+");
-    }
-    else{
-        $(this).html("-");
-    }	
-    $("#box").slideToggle();	
-});
-</script>
-
-</body>
-
-</html>
+	</html>
