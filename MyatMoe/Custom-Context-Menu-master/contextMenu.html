@@ -8,11 +8,12 @@
   <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
   <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,300">
   <link rel="stylesheet" href="style.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
   <style type="text/css">
       table {
         text-align: center;
-        margin-left: 300px;
+        margin-left: 200px;
         margin-top: 30px;
       }
   </style>
@@ -39,17 +40,17 @@
   </main>
 
   <table id="myTable">
-    <tr>
+    <tr id="0">
         <td class="task"></td>
         <td class="task">Condition1</td>
         <td class="task">Else</td>
     </tr>
-    <tr>
+    <tr id="1">
         <td class="task">Decision</td>
         <td class="task"><input type="text"></td>
         <td class="task">  </td>
     </tr>
-    <tr>
+    <tr id="2">
         <td class="task">Action</td>
         <td class="task"><input type="text"></td>
         <td class="task">  </td>
@@ -60,7 +61,7 @@
   <nav id="context-menu" class="context-menu">
     <ul class="context-menu__items">
       <li class="context-menu__item">
-        <a href="#" class="context-menu__link" data-action="View"><i class="fa fa-eye"></i> Add Row</a>
+        <a href="#" class="context-menu__link" data-action="Add Row"><i class="fa fa-eye"></i> Add Row</a>
       </li>
       <li class="context-menu__item">
         <a href="#" class="context-menu__link" data-action="Edit"><i class="fa fa-edit"></i> Edit Task</a>

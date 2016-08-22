@@ -2,6 +2,8 @@
   
   "use strict";
 
+  
+
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
   //
@@ -95,6 +97,8 @@
   var windowWidth;
   var windowHeight;
 
+  var rowId;
+
   /**
    * Initialise our application's code.
    */
@@ -103,7 +107,25 @@
     clickListener();
     keyupListener();
     resizeListener();
+
+    //var table = document.getElementById("myTable");
+
+    // table.onclick = function(event) {
+    //   event = event || window.event
+    //   var target = event.target || event.srcElement
+      
+    //   while(target != table) { // ( ** )
+    //     if (target.nodeName == 'TD') { // ( * )
+    //        console.log("target : " +target);
+    //        toggleHighlight(target);
+    //     }
+    //     target = target.parentNode;        
+    //   }
+    // }
+
   }
+
+
 
   /**
    * Listens for contextmenu events.
@@ -115,14 +137,23 @@
       if ( taskItemInContext ) {
         e.preventDefault();
         toggleMenuOn();
-        console.log(e);
-        positionMenu(e);
+        console.log(taskItemInContext);
+        positionMenu(e);        
       } else {
         taskItemInContext = null;
         toggleMenuOff();
       }
     });
   }
+
+  $(function() {
+    $('table').on('contextmenu', 'tr', function(e) {
+        e.preventDefault();
+        //alert($(this).attr('id'));
+        rowId = $(this).attr('id');
+        
+    });
+});
 
   /**
    * Listens for click events.
@@ -219,7 +250,33 @@
    */
   function menuItemListener( link ) {
     console.log( "Task ID - " + taskItemInContext.getAttribute("data-id") + ", Task action - " + link.getAttribute("data-action"));
+    if (link.getAttribute("data-action") == "Add Row") {
+      addNewRow();
+    }
     toggleMenuOff();
+  }
+
+  function addNewRow() {
+    var table = document.getElementById("myTable");
+    alert("rowId : " + rowId);
+    var text = table.rows[rowId].cells[0].innerHTML;
+    alert(text);
+    var row = table.insertRow(++rowId);
+    row.setAttribute("id", rowId);
+    alert("rowid to insert : " + rowId);
+    
+    var cell0 = row.insertCell(0);
+    cell0.innerHTML = text;
+    cell0.setAttribute("class", "task");
+
+    for (var i = 1; i < table.rows[0].cells.length; i++) {
+      var cell = row.insertCell(i);
+      cell.setAttribute("class", "task");
+
+      if (i != table.rows[0].cells.length-1) {        
+       cell.innerHTML = "<input type='text'>";
+      }
+    }
   }
 
   /**
