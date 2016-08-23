@@ -21,29 +21,15 @@
 </head>
 
 <body>
+<br><br>
 
-  <main class="content">
-    <div class="container">
-      <ul class="tasks">
-        <li class="task" data-id="3">
-          <div class="task__content">
-            Go To Grocery
-          </div>
-          <div class="task__actions">
-            <i class="fa fa-eye"></i>
-            <i class="fa fa-edit"></i>
-            <i class="fa fa-times"></i>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </main>
+<center><button> Save </button>  </center>  
 
-  <table id="myTable">
-    <tr id="0">
-        <td class="task"></td>
-        <td class="task">Condition1</td>
-        <td class="task">Else</td>
+  <table id="dtTable">
+    <tr id="header">
+        <td></td>
+        <td>Condition1</td>
+        <td>Else</td>
     </tr>
     <tr id="1">
         <td class="task">Decision</td>
@@ -61,10 +47,10 @@
   <nav id="context-menu" class="context-menu">
     <ul class="context-menu__items">
       <li class="context-menu__item">
-        <a href="#" class="context-menu__link" data-action="Add Row"><i class="fa fa-eye"></i> Add Row</a>
+        <a href="#" class="context-menu__link" data-action="Add Row Above"><i class="fa fa-eye"></i> Add Row Above</a>
       </li>
       <li class="context-menu__item">
-        <a href="#" class="context-menu__link" data-action="Edit"><i class="fa fa-edit"></i> Edit Task</a>
+        <a href="#" class="context-menu__link" data-action="Add Row Below"><i class="fa fa-edit"></i> Add Row Below</a>
       </li>
       <li class="context-menu__item">
         <a href="#" class="context-menu__link" data-action="Delete"><i class="fa fa-times"></i> Delete Task</a>
@@ -73,6 +59,7 @@
   </nav>
 
   <script src="main.js"></script>
+
 </body>
 
 </html>

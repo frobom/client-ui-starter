@@ -98,6 +98,9 @@
   var windowHeight;
 
   var rowId;
+  var row;
+  var text;
+  var id = 3;
 
   /**
    * Initialise our application's code.
@@ -108,20 +111,10 @@
     keyupListener();
     resizeListener();
 
-    //var table = document.getElementById("myTable");
-
-    // table.onclick = function(event) {
-    //   event = event || window.event
-    //   var target = event.target || event.srcElement
-      
-    //   while(target != table) { // ( ** )
-    //     if (target.nodeName == 'TD') { // ( * )
-    //        console.log("target : " +target);
-    //        toggleHighlight(target);
-    //     }
-    //     target = target.parentNode;        
-    //   }
-    // }
+    $("button").click(function(){
+        //alert("The button was clicked.");
+        createJsonObject();
+    });
 
   }
 
@@ -137,7 +130,8 @@
       if ( taskItemInContext ) {
         e.preventDefault();
         toggleMenuOn();
-        console.log(taskItemInContext);
+        //text = taskItemInContext.innerHTML;
+        //console.log(text);
         positionMenu(e);        
       } else {
         taskItemInContext = null;
@@ -151,7 +145,13 @@
         e.preventDefault();
         //alert($(this).attr('id'));
         rowId = $(this).attr('id');
-        
+        row = $(this);
+
+        text = document.getElementById(rowId).getElementsByTagName("td")[0].innerHTML;
+
+        console.log("rowId: " + rowId);
+        console.log("row : " + row);
+        console.log("text : " + text);
     });
 });
 
@@ -250,35 +250,136 @@
    */
   function menuItemListener( link ) {
     console.log( "Task ID - " + taskItemInContext.getAttribute("data-id") + ", Task action - " + link.getAttribute("data-action"));
-    if (link.getAttribute("data-action") == "Add Row") {
-      addNewRow();
+    if (link.getAttribute("data-action") == "Add Row Above") {
+      addNewRow("above");
+    }
+    else if (link.getAttribute("data-action") == "Add Row Below") {
+      addNewRow("below");
     }
     toggleMenuOff();
   }
 
-  function addNewRow() {
-    var table = document.getElementById("myTable");
-    alert("rowId : " + rowId);
-    var text = table.rows[rowId].cells[0].innerHTML;
-    alert(text);
-    var row = table.insertRow(++rowId);
-    row.setAttribute("id", rowId);
-    alert("rowid to insert : " + rowId);
-    
-    var cell0 = row.insertCell(0);
-    cell0.innerHTML = text;
-    cell0.setAttribute("class", "task");
+
+  function addNewRow( place ) {
+    var table = document.getElementById("dtTable");
+
+    var html = "<tr id='" + id + "'> <td class='task'>" + text + "</td>";
+    id++;
 
     for (var i = 1; i < table.rows[0].cells.length; i++) {
-      var cell = row.insertCell(i);
-      cell.setAttribute("class", "task");
+      html += "<td class='task'>";
 
       if (i != table.rows[0].cells.length-1) {        
-       cell.innerHTML = "<input type='text'>";
+       html += "<input type='text'>";
       }
+
+      html += "</td>";
+    }
+
+     html += "</tr>";
+
+     console.log("html : " + html);
+
+     if (place == "above") {
+      $(html).insertBefore(row);
+     }
+    
+    else {
+      $(html).insertAfter(row);
+    }
+
+    console.log("==================");
+  }
+
+  function createJsonObject() {  
+ 
+  var decisionArr = [];
+  var actionArr = [];
+
+  var rowsCount = document.getElementById("dtTable").rows.length;
+
+  var decIndex = 0;
+  var actIndex = 0;  
+
+  for (var row = 1; row < rowsCount; row++) { 
+
+      var cellsCount = document.getElementById("dtTable").rows[row].cells.length;      
+
+      if (document.getElementById("dtTable").rows[row].cells[0].innerHTML == "Decision") {
+        
+           
+              decisionArr[decIndex++] = document.getElementById("dtTable").rows[row].cells[1].children[0].value;
+          
+      }
+
+      else {
+            
+              actionArr[actIndex++] = document.getElementById("dtTable").rows[row].cells[1].children[0].value;
+              //alert(tbl.rows[rCount - 1].cells[0].getElementsByTagName("input")[0].value);
+          
+      }   
+  }
+
+  var jsonArray = '{"rulelist": [{';
+  var decision = "decision";
+  var action = "action";
+// var text = '{"employees":[' +
+// '{"firstName":"John","lastName":"Doe" },' +
+// '{"firstName":"Anna","lastName":"Smith" },' +
+// '{"firstName":"Peter","lastName":"Jones" }]}';
+
+console.log("decisionArr : " + decisionArr.length);
+console.log("actionArr : " + actionArr.length);
+
+  for (var j = 0; j < decisionArr.length; j++) {
+    jsonArray += '"' +decision + '":"' + decisionArr[j] + '",';
+  }
+
+  for (var k=0; k < actionArr.length; k++) {
+    jsonArray += '"' +action + '":"' + actionArr[k] + '"';
+
+    if (k != actionArr.length-1) {
+      jsonArray += ",";
     }
   }
 
+  jsonArray += '}]}'; 
+
+
+// var count;
+
+// if (decisionArr.length > actionArr.length) {
+//   count = decisionArr.length;
+// }
+// else {
+//   count = actionArr.length;
+// } 
+
+//   for (var i = 0; i < count; i++) {
+
+//     if (i < decisionArr.length && i < actionArr.length) {
+//        jsonArray += '{"' + decision + '":"' + decisionArr[i] + '","' + action + '":"' + actionArr[i] + '" }';
+//     }
+
+//     if (i < actionArr.length) {
+//       jsonArray += '{"' + action + '":"' + actionArr[i] + '" }';
+//     }
+
+//     if (i < decisionArr.length) {
+//       jsonArray += '{"' + decision + '":"' + decisionArr[i] + '" }';
+//     }   
+
+//     if ((i != actionArr.length-1) || (i != decisionArr.length-1)) {
+//       jsonArray += ",";
+//     }
+//   }
+
+//   jsonArray += ']}';
+
+  console.log("jsonArray : " + jsonArray);
+}
+
+ 
   /**
    * Run the app.
    */
