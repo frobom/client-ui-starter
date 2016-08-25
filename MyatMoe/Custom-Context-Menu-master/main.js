@@ -2,7 +2,18 @@
   
   "use strict";
 
-  
+  $("input").focusin(function(){
+               $(this).css("border", "2px solid lightblue");
+            });
+
+  $("input").focusout(function(){
+        $(this).css("border", "1px solid");
+    });
+
+  $("button").click(function(){
+        //alert("The button was clicked.");
+        createJsonObject();
+    });
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -101,6 +112,7 @@
   var row;
   var text;
   var id = 3;
+  var colCount = 1;
 
   /**
    * Initialise our application's code.
@@ -109,12 +121,7 @@
     contextListener();
     clickListener();
     keyupListener();
-    resizeListener();
-
-    $("button").click(function(){
-        //alert("The button was clicked.");
-        createJsonObject();
-    });
+    resizeListener();   
 
   }
 
@@ -145,13 +152,9 @@
         e.preventDefault();
         //alert($(this).attr('id'));
         rowId = $(this).attr('id');
-        row = $(this);
+        row = $(this);        
 
-        text = document.getElementById(rowId).getElementsByTagName("td")[0].innerHTML;
-
-        console.log("rowId: " + rowId);
-        console.log("row : " + row);
-        console.log("text : " + text);
+        console.log("rowId: " + rowId);        
     });
 });
 
@@ -250,12 +253,26 @@
    */
   function menuItemListener( link ) {
     console.log( "Task ID - " + taskItemInContext.getAttribute("data-id") + ", Task action - " + link.getAttribute("data-action"));
+    
+    text = document.getElementById(rowId).getElementsByTagName("th")[0].innerHTML;
+
+    // console.log("text : " + text);
+    // var condCount = $('#condition tr').length;
+    // var cellsCount = $('#condition tr td').length;
+    // var actCount = $('#action tr').length;
+    // console.log("condCount : " + condCount);
+    // console.log("actCount : " + actCount);
+    // console.log("cellsCount : " + cellsCount);
+
     if (link.getAttribute("data-action") == "Add Row Above") {
       addNewRow("above");
     }
     else if (link.getAttribute("data-action") == "Add Row Below") {
       addNewRow("below");
     }
+    else if (link.getAttribute("data-action") == "Add Column") {
+      addColumn();
+    };
     toggleMenuOff();
   }
 
@@ -263,118 +280,147 @@
   function addNewRow( place ) {
     var table = document.getElementById("dtTable");
 
-    var html = "<tr id='" + id + "'> <td class='task'>" + text + "</td>";
-    id++;
+    var html;    
 
-    for (var i = 1; i < table.rows[0].cells.length; i++) {
-      html += "<td class='task'>";
+    if (place == "above") {
+      html = "<tr id='" + id + "'> <th class='task'>" + text + "</th>";
+      id++;
 
-      if (i != table.rows[0].cells.length-1) {        
-       html += "<input type='text'>";
+      for (var i = 1; i < table.rows[0].cells.length; i++) {
+        html += "<td class='task'> <input type='text'> </td>";      
       }
 
-      html += "</td>";
-    }
+      html += "</tr>";
 
-     html += "</tr>";
+      $(html).insertBefore(row);
+
+      document.getElementById(rowId).getElementsByTagName("th")[0].innerHTML = ++text;
+     }
+
+     else {
+        html = "<tr id='" + id + "'> <th class='task'>" + (++text) + "</th>";
+        id++;
+
+        for (var i = 1; i < table.rows[0].cells.length; i++) {
+          html += "<td class='task'> <input type='text'> </td>";      
+        }
+
+        html += "</tr>";
+
+        $(html).insertAfter(row);
+     }
+
+    // for (var i = 1; i < table.rows[0].cells.length; i++) {
+    //   html += "<td class='task'> <input type='text'> </td>";      
+    // }
+
+    //  html += "</tr>";
 
      console.log("html : " + html);
-
-     if (place == "above") {
-      $(html).insertBefore(row);
-     }
-    
-    else {
-      $(html).insertAfter(row);
-    }
 
     console.log("==================");
   }
 
-  function createJsonObject() {  
- 
-  var decisionArr = [];
-  var actionArr = [];
-
-  var rowsCount = document.getElementById("dtTable").rows.length;
-
-  var decIndex = 0;
-  var actIndex = 0;  
-
-  for (var row = 1; row < rowsCount; row++) { 
-
-      var cellsCount = document.getElementById("dtTable").rows[row].cells.length;      
-
-      if (document.getElementById("dtTable").rows[row].cells[0].innerHTML == "Decision") {
-        
-           
-              decisionArr[decIndex++] = document.getElementById("dtTable").rows[row].cells[1].children[0].value;
-          
-      }
-
-      else {
-            
-              actionArr[actIndex++] = document.getElementById("dtTable").rows[row].cells[1].children[0].value;
-              //alert(tbl.rows[rCount - 1].cells[0].getElementsByTagName("input")[0].value);
-          
-      }   
+  function addColumn() {
+    console.log("new Column number : " + ++colCount);
+    $("tr:first").append("<th>" + colCount + "</th>");
+    $("tr:not(:first)").append("<td class='task'> <input type='text'> </td>");
   }
 
-  var jsonArray = '{"rulelist": [{';
+  function createJsonObject() {  
+ 
+  // var decisionArr = [];
+  // var actionArr = [];  
+
+  // var decIndex = 0;
+  // var actIndex = 0;
+
+  // var condCount = $('#condition tr').length;  
+
+  // for (var row = 1; row < rowsCount; row++) { 
+
+  //     var cellsCount = document.getElementById("dtTable").rows[row].cells.length;      
+
+  //     if (document.getElementById("dtTable").rows[row].cells[0].innerHTML == "Decision") {
+        
+           
+  //             decisionArr[decIndex++] = document.getElementById("dtTable").rows[row].cells[1].children[0].value;
+          
+  //     }
+
+  //     else {
+            
+  //             actionArr[actIndex++] = document.getElementById("dtTable").rows[row].cells[1].children[0].value;
+  //             //alert(tbl.rows[rCount - 1].cells[0].getElementsByTagName("input")[0].value);
+          
+  //     }   
+  // }
+
+  var jsonArray = '{"decTable": [{ "conditions" : [';
   var decision = "decision";
   var action = "action";
+
+  var table = document.getElementById("dtTable");
+
+  var rowsCount = $( "#condition tr" ).length;
+  var colsCount = $( "#condition tr td" ).length;
+
+  console.log("condition rowsCount : " + rowsCount);
+  console.log("colsCount : " + colsCount);
+  console.log("first cell: " + table.rows[1].cells[1].innerHTML);
+
+  if (rowsCount == 1) {
+    jsonArray += '"' + table.rows[1].cells[1].innerHTML + '"'; 
+  }
+  else {
+    for (var i=1; i<rowsCount; i++) {
+      jsonArray += '"' + table.rows[i].cells[1].innerHTML + '"'; 
+
+      if (i != rowsCount - 1) {
+          jsonArray += ',';
+      }
+    }
+  }
+  
+
+  jsonArray += '], "actions" : [';
+
+  //rowsCount = $( "#dtTable tr" ).length - $( "#condition tr" ).length;
+
+  for (var i=rowsCount; i<$( "#dtTable tr" ).length; i++) {
+      jsonArray += '"' + table.rows[i].cells[1].innerHTML + '"'; 
+
+      if (i != rowsCount - 1) {
+          jsonArray += ',';
+      }
+  }
+
+  jsonArray += '],';
+
+  jsonArray += '}]}';
+
+
 // var text = '{"employees":[' +
 // '{"firstName":"John","lastName":"Doe" },' +
 // '{"firstName":"Anna","lastName":"Smith" },' +
 // '{"firstName":"Peter","lastName":"Jones" }]}';
 
-console.log("decisionArr : " + decisionArr.length);
-console.log("actionArr : " + actionArr.length);
+// console.log("decisionArr : " + decisionArr.length);
+// console.log("actionArr : " + actionArr.length);
 
-  for (var j = 0; j < decisionArr.length; j++) {
-    jsonArray += '"' +decision + '":"' + decisionArr[j] + '",';
-  }
+//   for (var j = 0; j < decisionArr.length; j++) {
+//     jsonArray += '"' +decision + '":"' + decisionArr[j] + '",';
+//   }
 
-  for (var k=0; k < actionArr.length; k++) {
-    jsonArray += '"' +action + '":"' + actionArr[k] + '"';
+//   for (var k=0; k < actionArr.length; k++) {
+//     jsonArray += '"' +action + '":"' + actionArr[k] + '"';
 
-    if (k != actionArr.length-1) {
-      jsonArray += ",";
-    }
-  }
-
-  jsonArray += '}]}'; 
-
-
-// var count;
-
-// if (decisionArr.length > actionArr.length) {
-//   count = decisionArr.length;
-// }
-// else {
-//   count = actionArr.length;
-// } 
-
-//   for (var i = 0; i < count; i++) {
-
-//     if (i < decisionArr.length && i < actionArr.length) {
-//        jsonArray += '{"' + decision + '":"' + decisionArr[i] + '","' + action + '":"' + actionArr[i] + '" }';
-//     }
-
-//     if (i < actionArr.length) {
-//       jsonArray += '{"' + action + '":"' + actionArr[i] + '" }';
-//     }
-
-//     if (i < decisionArr.length) {
-//       jsonArray += '{"' + decision + '":"' + decisionArr[i] + '" }';
-//     }   
-
-//     if ((i != actionArr.length-1) || (i != decisionArr.length-1)) {
+//     if (k != actionArr.length-1) {
 //       jsonArray += ",";
 //     }
 //   }
 
-//   jsonArray += ']}';
+ 
 
   console.log("jsonArray : " + jsonArray);
 }

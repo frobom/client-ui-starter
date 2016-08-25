@@ -3,17 +3,17 @@
 
 <head>
   <meta charset="UTF-8">
-  <title>Custom Context Menus!</title>
+  <title>Decision Table</title>
   <link rel="stylesheet" href="http://meyerweb.com/eric/tools/css/reset/reset.css">
-  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
-  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,300">
+  <!--<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css"> -->
+  <!--<link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,300"> -->
   <link rel="stylesheet" href="style.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
 
   <style type="text/css">
       table {
         text-align: center;
-        margin-left: 200px;
+        margin-left: 100px;
         margin-top: 30px;
       }
   </style>
@@ -26,21 +26,29 @@
 <center><button> Save </button>  </center>  
 
   <table id="dtTable">
+  
     <tr id="header">
-        <td></td>
-        <td>Condition1</td>
-        <td>Else</td>
-    </tr>
-    <tr id="1">
-        <td class="task">Decision</td>
+      <th></th>
+      <th></th>
+      <th>1</th>
+    </tr>    
+  
+    <tbody id="condition">
+      <tr id="1">
+        <th class="task">1</th>
         <td class="task"><input type="text"></td>
-        <td class="task">  </td>
-    </tr>
-    <tr id="2">
-        <td class="task">Action</td>
         <td class="task"><input type="text"></td>
-        <td class="task">  </td>
-    </tr>
+      </tr>
+    </tbody>
+
+    <tbody id="action">
+      <tr id="2">
+        <th class="task">1</th>
+        <td class="task"><input type="text"></td>
+        <td class="task"><input type="text"></td>
+      </tr>
+    </tbody>
+    
 </table>
   
 
@@ -53,7 +61,7 @@
         <a href="#" class="context-menu__link" data-action="Add Row Below"><i class="fa fa-edit"></i> Add Row Below</a>
       </li>
       <li class="context-menu__item">
-        <a href="#" class="context-menu__link" data-action="Delete"><i class="fa fa-times"></i> Delete Task</a>
+        <a href="#" class="context-menu__link" data-action="Add Column"><i class="fa fa-times"></i> Add Column</a>
       </li>
     </ul>
   </nav>
