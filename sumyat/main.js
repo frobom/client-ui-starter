@@ -1,31 +1,3 @@
-function divCenterToggle(appName,switchApp){
-
-	var ele = document.getElementById(appName).value; 
-
-	var switchData = document.getElementById(switchApp); 	
-
-	switch(ele){
-
-		case "Application1":
-
-		leftAndRightCreateDiv(switchData,ele);
-		
-		break;
-
-		case "Application2":
-
-		leftAndRightCreateDiv(switchData,ele);
-
-		break;
-
-		case "Application3":
-
-		leftAndRightCreateDiv(switchData,ele);
-
-		break;
-	}
-}
-
 $(document).ready( function() {
 
 	$("#restoreButton").click(function(){
@@ -39,6 +11,8 @@ $(document).ready( function() {
 			$("#rightDiv").css({bottom:0, right: 0,width:"10%", height:"25px",position:'absolute'});
 
 			$(".center").css({width:"100%"});
+
+			$(".rightOfCenter").css({width:"83.1%"});
 		}
 
 		else{
@@ -46,59 +20,110 @@ $(document).ready( function() {
 			$(this).html("-");
 
 			$("#rightDiv").parent().css({position: 'absolute'});
+
 			$("#rightDiv").css({right:0,height:'100%',width:'15%',position:'absolute'});
-			$(".center").css({width:"73%"});		
+
+			$(".center").css({width:"73%"});
+
+			$(".rightOfCenter").css({width:"76.8%"});	
 		}	
-		
+
 	});
 
 });
 
-// $(document).ready( function() {
+var myState=0;
 
-// 	$("#createButton").click(function () {
+$(document).ready(function(){	
 
-// 		var counter=0;
+	$('#myBtn1').click(function(){
 
-// 		if($(this).html() == "+"){
+		if (myState==0){
 
-// 			var newTextBoxDiv = $(document.createElement('div')).attr("id", 'TextBoxDiv' + counter);
+			leftAndRightCreateDiv();
 
-// 			newTextBoxDiv.after().html('<input type="text" name="textbox' + counter +'" id="textbox' + counter + '" value="" >');
+			myState=1;
 
-// 			newTextBoxDiv.appendTo("#newProjectCreate");
+		} else {
 
-// 			counter++;
-// 		}
+			$( this ).replaceWith( $( this ) );	
 
-// 	});
+		}
 
-// });
+	});
 
-function leftAndRightCreateDiv(switchData,ele){
+});
+
+$(document).ready(function(){
+
+	$('#myBtn2').click(function(){
+
+		if (myState==0){
+
+			leftAndRightCreateDiv();
+
+			myState=1;
+
+		} else {
+
+			$( this ).replaceWith( $( this ) );	
+
+		}
+
+	});
+
+});
+
+$(document).ready(function(){	
+
+	$('#myBtn3').click(function(){
+
+		if (myState==0){
+
+			leftAndRightCreateDiv();
+
+			myState=1;
+
+		} else {
+
+			$( this ).replaceWith( $( this ) );	
+
+		}
+
+	});
+
+});
+
+function leftAndRightCreateDiv(){
 
 	var leftOfCenter = document.createElement('div');	
 
-	$(leftOfCenter).attr({"id":"leftOfCenterID" , "class":"leftOfCenter"});
-	
+	$(leftOfCenter).attr({"class":"leftOfCenter"});
+
 	var rightOfCenter = document.createElement('div');
 
-	$(rightOfCenter).attr({"id":"rightOfCenterID" , "class":"rightOfCenter"});	
+	$(rightOfCenter).attr({"class":"rightOfCenter"});	
 
-	$(switchData).append(leftOfCenter,rightOfCenter);
+	$('#centerDiv').append(leftOfCenter,rightOfCenter);
 
-	$(leftOfCenter).css({"position":"absolute","left": "0","width": "18%","height":"100%","padding":"10px","background-color":"blue","overflow":"auto"});
+	$('.leftOfCenter').append("<div class='titleMenu' id='titleMenuID'>"
 
-	$(rightOfCenter).css({"position":"absolute","right": "0","width": "77.5%","height":"100%","padding":"10px","background-color":"magenta","overflow":"auto"});
+		+ "<div class='createButton'>+</div></div> <br>"
 
-	//$("#leftOfCenterID").append("<div class='menu'><ul>Folder<li><a href='#'>Apple</a></li><li><a href='#'>Orange</a></li><li><a href='#'>Grape</a></li></ul></div>" );
+		+ "<div class='newProjectCreateDiv'></div>");	
 
-	$("#leftOfCenterID").append("<div class='titleMenu'></div>");	
+	$('.createButton').click(function(){
 
-}
+		var newTextBoxDiv = $(document.createElement('div')).attr("id", "TextBoxDiv");		
 
-function appendChildCreate(){
+		newTextBoxDiv.after().html('<input type="text" id="textbox">');			
 
+		if($('#TextBoxDiv').length==0){
 
+			$('.newProjectCreateDiv').append(newTextBoxDiv);
+
+		}	
+
+	});
 
 }
