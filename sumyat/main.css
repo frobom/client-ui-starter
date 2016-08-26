@@ -68,12 +68,28 @@ html, body{
 .rightOfCenter{
 	position:absolute;
 	right: 0;
-	width: 76.8%;
-	height:100%;
+	width: 76.7%;
+	height:80%;
 	padding:10px;
 	border-right: 1px solid gray;	
 	/*background-color:magenta;*/
 	overflow:auto;
+}
+
+.rightBottomOfCenter{
+	position:absolute;
+	bottom: 0;
+	right: 0;
+	width: 76.5%;
+	height:74px;
+	padding:10px;
+	border-top: 1px solid gray;
+	border-right: 1px solid gray;
+	border-left: 1px solid gray;	
+	/*background-color:wheat;*/
+	overflow:auto;
+	overflow-x: hidden;
+	overflow-y: hidden;	
 }
 
 .titleMenu{
@@ -90,8 +106,9 @@ html, body{
 	top:9%;
 	left:0px;
 	width:170px;
-	height:87%;
+	height:84%;
 	padding:10px;
+	overflow: auto;
 	/*background-color:#EDFDEF;*/
 }
 
@@ -144,7 +161,7 @@ html, body{
 	overflow: auto;     
 	padding: 5px;
 	height:94%;
-	background: gray;
+	/*background: gray;*/
 }
 
 
