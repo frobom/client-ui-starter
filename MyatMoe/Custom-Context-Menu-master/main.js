@@ -1,14 +1,6 @@
 (function() {
   
-  "use strict";
-
-  $("input").focusin(function(){
-               $(this).css("border", "2px solid lightblue");
-            });
-
-  $("input").focusout(function(){
-        $(this).css("border", "1px solid");
-    });
+  "use strict";  
 
   $("button").click(function(){
         //alert("The button was clicked.");
@@ -111,8 +103,8 @@
   var rowId;
   var row;
   var text;
-  var id = 3;
   var colCount = 1;
+  var currentColumn;
 
   /**
    * Initialise our application's code.
@@ -121,7 +113,7 @@
     contextListener();
     clickListener();
     keyupListener();
-    resizeListener();   
+    resizeListener();     
 
   }
 
@@ -150,12 +142,26 @@
   $(function() {
     $('table').on('contextmenu', 'tr', function(e) {
         e.preventDefault();
+        contextListener();
         //alert($(this).attr('id'));
         rowId = $(this).attr('id');
         row = $(this);        
 
-        console.log("rowId: " + rowId);        
+        console.log("rowId: " + rowId);
+        console.log("row : " + row.html());
+        console.log("row : " + row);
+        //console.log("parent of row : " + row.parent().html());        
     });
+
+    $('#dtTable').on('contextmenu', 'td', function(){
+      currentColumn = $(this).parent().children().index($(this));
+        alert('Column: ' + currentColumn);
+
+        toggleMenuOn();
+        //text = taskItemInContext.innerHTML;
+        //console.log(text);
+        positionMenu(e);
+  });
 });
 
   /**
@@ -252,179 +258,179 @@
    * @param {HTMLElement} link The link that was clicked
    */
   function menuItemListener( link ) {
-    console.log( "Task ID - " + taskItemInContext.getAttribute("data-id") + ", Task action - " + link.getAttribute("data-action"));
     
-    text = document.getElementById(rowId).getElementsByTagName("th")[0].innerHTML;
-
-    // console.log("text : " + text);
-    // var condCount = $('#condition tr').length;
-    // var cellsCount = $('#condition tr td').length;
-    // var actCount = $('#action tr').length;
-    // console.log("condCount : " + condCount);
-    // console.log("actCount : " + actCount);
-    // console.log("cellsCount : " + cellsCount);
+    console.log( "Task ID - " + taskItemInContext.getAttribute("data-id") + ", Task action - " + link.getAttribute("data-action"));
+    console.log("currentColumn " + currentColumn);
+    
+    
+    text = row.find("th").text();
+    console.log("text : " + text);    
 
     if (link.getAttribute("data-action") == "Add Row Above") {
-      addNewRow("above");
+      addNewRow("above", row);
     }
     else if (link.getAttribute("data-action") == "Add Row Below") {
-      addNewRow("below");
+      addNewRow("below", row);
     }
-    else if (link.getAttribute("data-action") == "Add Column") {
-      addColumn();
-    };
+    else if (link.getAttribute("data-action") == "Add Column Left") {
+      addColumn(currentColumn, 'before');
+    }
+    else if (link.getAttribute("data-action") == "Add Column Right") {
+      addColumn(currentColumn, 'after');
+    }
     toggleMenuOff();
   }
 
 
-  function addNewRow( place ) {
+  function addNewRow( place, selectedRow ) {
+    console.log("row in addNewRow : " + selectedRow);
+    //console.log("selectedRow html: " + selectedRow.html());
     var table = document.getElementById("dtTable");
 
     var html;    
 
     if (place == "above") {
-      html = "<tr id='" + id + "'> <th class='task'>" + text + "</th>";
-      id++;
+
+      html = "<tr> <th class='task'>" + text + "</th>";
 
       for (var i = 1; i < table.rows[0].cells.length; i++) {
-        html += "<td class='task'> <input type='text'> </td>";      
+        html += "<td class='task'> <input type='text' class='data'> </td>";      
+      }
+ 
+      html += "</tr>";      
+
+      $(html).insertBefore(selectedRow);
+
+      selectedRow.find("th").text(++text);
+      
+      var nextRowIndex = selectedRow.next().index();
+      //alert("index of next row of selectedRow : " + nextRowIndex);
+
+      var r = selectedRow.next();
+
+      while (nextRowIndex != -1) { 
+
+        r.find("th").text(++text);
+        r = r.next();
+        nextRowIndex = r.index();
+      }
+          
+     }
+
+   else {
+      html = "<tr> <th class='task'>" + (++text) + "</th>";
+
+      for (var i = 1; i < table.rows[0].cells.length; i++) {
+        html += "<td class='task'> <input type='text' class='data'> </td>";      
       }
 
       html += "</tr>";
 
-      $(html).insertBefore(row);
-
-      document.getElementById(rowId).getElementsByTagName("th")[0].innerHTML = ++text;
-     }
-
-     else {
-        html = "<tr id='" + id + "'> <th class='task'>" + (++text) + "</th>";
-        id++;
-
-        for (var i = 1; i < table.rows[0].cells.length; i++) {
-          html += "<td class='task'> <input type='text'> </td>";      
-        }
-
-        html += "</tr>";
-
-        $(html).insertAfter(row);
-     }
-
-    // for (var i = 1; i < table.rows[0].cells.length; i++) {
-    //   html += "<td class='task'> <input type='text'> </td>";      
-    // }
-
-    //  html += "</tr>";
+      $(html).insertAfter(row);
+   }
 
      console.log("html : " + html);
 
     console.log("==================");
   }
 
-  function addColumn() {
-    console.log("new Column number : " + ++colCount);
-    $("tr:first").append("<th>" + colCount + "</th>");
-    $("tr:not(:first)").append("<td class='task'> <input type='text'> </td>");
-  }
 
-  function createJsonObject() {  
- 
-  // var decisionArr = [];
-  // var actionArr = [];  
-
-  // var decIndex = 0;
-  // var actIndex = 0;
-
-  // var condCount = $('#condition tr').length;  
-
-  // for (var row = 1; row < rowsCount; row++) { 
-
-  //     var cellsCount = document.getElementById("dtTable").rows[row].cells.length;      
-
-  //     if (document.getElementById("dtTable").rows[row].cells[0].innerHTML == "Decision") {
-        
-           
-  //             decisionArr[decIndex++] = document.getElementById("dtTable").rows[row].cells[1].children[0].value;
-          
-  //     }
-
-  //     else {
-            
-  //             actionArr[actIndex++] = document.getElementById("dtTable").rows[row].cells[1].children[0].value;
-  //             //alert(tbl.rows[rCount - 1].cells[0].getElementsByTagName("input")[0].value);
-          
-  //     }   
+  // function addColumn() {
+  //   console.log("new Column number : " + ++colCount);
+  //   $("tr:first").append("<th>" + colCount + "</th>");
+  //   $("tr:not(:first)").append("<td class='task'> <input type='text'> </td>");
   // }
 
-  var jsonArray = '{"decTable": [{ "conditions" : [';
-  var decision = "decision";
-  var action = "action";
+function addColumn(currentColumn,afterOrBefore)
+{
+  currentColumn--;
+   var allRows=$('table').find('tr');
+    $.each(allRows,function(index,value){
+          alert("value : " + value);
+          var cells=$(value).find('td');
+          if(afterOrBefore=='before')
+                  {
+               $('<td><input type="text"></td>').insertBefore($(cells[currentColumn]));
+               }
+           else
+             {
+                $('<td><input type="text"></td>').insertAfter($(cells[currentColumn]));
+}
+    });
+}
+
+ 
+
+  function createJsonObject() {
+
+  var json = {
+    conditions : [],
+    actions : [],
+    rules :[]  
+  }; 
 
   var table = document.getElementById("dtTable");
 
-  var rowsCount = $( "#condition tr" ).length;
-  var colsCount = $( "#condition tr td" ).length;
+  var conditionRowsCount = $( "#condition tr" ).length;
+  var colIndex = 1;
 
-  console.log("condition rowsCount : " + rowsCount);
-  console.log("colsCount : " + colsCount);
-  console.log("first cell: " + table.rows[1].cells[1].innerHTML);
+  console.log("conditionRowsCount : " + conditionRowsCount);
+  
+  for (var i=1; i<=conditionRowsCount; i++) {
 
-  if (rowsCount == 1) {
-    jsonArray += '"' + table.rows[1].cells[1].innerHTML + '"'; 
-  }
-  else {
-    for (var i=1; i<rowsCount; i++) {
-      jsonArray += '"' + table.rows[i].cells[1].innerHTML + '"'; 
-
-      if (i != rowsCount - 1) {
-          jsonArray += ',';
-      }
-    }
+    json.conditions.push(table.rows[i].cells[colIndex].children[0].value);
+   
   }
   
+  var totalRowsCount = $( "#dtTable tr" ).length;
 
-  jsonArray += '], "actions" : [';
+  for (var i=conditionRowsCount+1; i<totalRowsCount; i++) {
 
-  //rowsCount = $( "#dtTable tr" ).length - $( "#condition tr" ).length;
-
-  for (var i=rowsCount; i<$( "#dtTable tr" ).length; i++) {
-      jsonArray += '"' + table.rows[i].cells[1].innerHTML + '"'; 
-
-      if (i != rowsCount - 1) {
-          jsonArray += ',';
-      }
+      json.actions.push(table.rows[i].cells[colIndex].children[0].value);
+      
   }
 
-  jsonArray += '],';
+  console.log(JSON.stringify(json));
 
-  jsonArray += '}]}';
-
-
-// var text = '{"employees":[' +
-// '{"firstName":"John","lastName":"Doe" },' +
-// '{"firstName":"Anna","lastName":"Smith" },' +
-// '{"firstName":"Peter","lastName":"Jones" }]}';
-
-// console.log("decisionArr : " + decisionArr.length);
-// console.log("actionArr : " + actionArr.length);
-
-//   for (var j = 0; j < decisionArr.length; j++) {
-//     jsonArray += '"' +decision + '":"' + decisionArr[j] + '",';
-//   }
-
-//   for (var k=0; k < actionArr.length; k++) {
-//     jsonArray += '"' +action + '":"' + actionArr[k] + '"';
-
-//     if (k != actionArr.length-1) {
-//       jsonArray += ",";
-//     }
-//   }
-
+  var colsCount = table.rows[0].cells.length;
+  console.log("colsCount : " + colsCount);
  
+  colIndex++;
 
-  console.log("jsonArray : " + jsonArray);
+  for (colIndex; colIndex<colsCount; colIndex++) {
+
+       var rule = {
+        rule : []
+       };
+ 
+       var conditions = {
+          conditions : []
+       };
+
+       var actions = {
+          actions : []
+       };
+
+      for (var i=1; i<=conditionRowsCount; i++) {
+        conditions.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
+      }
+      
+
+      for (var i=conditionRowsCount+1; i<$( "#dtTable tr" ).length; i++) {
+
+        actions.actions.push(table.rows[i].cells[colIndex].children[0].value);
+      }
+
+      rule.rule.push(conditions);
+      rule.rule.push(actions);
+
+      console.log(JSON.stringify(rule));
+
+      json.rules.push(rule);
+
+  }
+  console.log("json : " + JSON.stringify(json));
 }
-
  
   /**
    * Run the app.
