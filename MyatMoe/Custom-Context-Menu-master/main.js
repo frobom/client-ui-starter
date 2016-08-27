@@ -100,7 +100,6 @@
   var windowWidth;
   var windowHeight;
 
-  var rowId;
   var row;
   var text;
   var colCount = 1;
@@ -142,25 +141,18 @@
   $(function() {
     $('table').on('contextmenu', 'tr', function(e) {
         e.preventDefault();
-        contextListener();
+        //contextListener();
         //alert($(this).attr('id'));
-        rowId = $(this).attr('id');
         row = $(this);        
 
-        console.log("rowId: " + rowId);
         console.log("row : " + row.html());
-        console.log("row : " + row);
-        //console.log("parent of row : " + row.parent().html());        
+        console.log("row : " + row);        
     });
 
     $('#dtTable').on('contextmenu', 'td', function(){
       currentColumn = $(this).parent().children().index($(this));
-        alert('Column: ' + currentColumn);
-
-        toggleMenuOn();
-        //text = taskItemInContext.innerHTML;
-        //console.log(text);
-        positionMenu(e);
+      text = $(this).parent().children(currentColumn).text();
+      alert('Column: ' + currentColumn);
   });
 });
 
@@ -291,10 +283,10 @@
 
     if (place == "above") {
 
-      html = "<tr> <th class='task'>" + text + "</th>";
+      html = "<tr class='task'> <th>" + text + "</th>";
 
       for (var i = 1; i < table.rows[0].cells.length; i++) {
-        html += "<td class='task'> <input type='text' class='data'> </td>";      
+        html += "<td class='task'> <input type='text'> </td>";      
       }
  
       html += "</tr>";      
@@ -318,10 +310,10 @@
      }
 
    else {
-      html = "<tr> <th class='task'>" + (++text) + "</th>";
+      html = "<tr class='task'> <th>" + (++text) + "</th>";
 
       for (var i = 1; i < table.rows[0].cells.length; i++) {
-        html += "<td class='task'> <input type='text' class='data'> </td>";      
+        html += "<td> <input type='text'> </td>";      
       }
 
       html += "</tr>";
@@ -343,19 +335,34 @@
 
 function addColumn(currentColumn,afterOrBefore)
 {
+  // var headerRow = $('table tr:first th:nth-child(' + currentColumn+ ')');
+  // alert("header : " + headerRow.html());
+
+  //var header = "$(th:nth-child(" +currentColumn+ ")";
+  var header = $('table tr:first th:nth-child(' + currentColumn+ ')');
+  alert("header : " + header.html());
+  
+  if (afterOrBefore=='before') {
+    alert("before");
+    //alert("$(headerRow[currentColumn]) : " + $(header).html());
+    $('<th>' + --text +'</th>').insertBefore($(header));
+  }
+
   currentColumn--;
    var allRows=$('table').find('tr');
     $.each(allRows,function(index,value){
           alert("value : " + value);
-          var cells=$(value).find('td');
+          var cells = $(value).find('td');
+          var header = $(value).find('th');
           if(afterOrBefore=='before')
-                  {
-               $('<td><input type="text"></td>').insertBefore($(cells[currentColumn]));
-               }
+            {
+              $('<td><input type="text"></td>').insertBefore($(cells[currentColumn]));
+            }
            else
              {
                 $('<td><input type="text"></td>').insertAfter($(cells[currentColumn]));
-}
+              }
+              //$(element).on('click', function () { add_img(); });
     });
 }
 
@@ -376,7 +383,7 @@ function addColumn(currentColumn,afterOrBefore)
 
   console.log("conditionRowsCount : " + conditionRowsCount);
   
-  for (var i=1; i<=conditionRowsCount; i++) {
+  for (var i = 1; i <= conditionRowsCount; i++) {
 
     json.conditions.push(table.rows[i].cells[colIndex].children[0].value);
    
@@ -384,20 +391,18 @@ function addColumn(currentColumn,afterOrBefore)
   
   var totalRowsCount = $( "#dtTable tr" ).length;
 
-  for (var i=conditionRowsCount+1; i<totalRowsCount; i++) {
+  for (var i = conditionRowsCount+1; i < totalRowsCount; i++) {
 
       json.actions.push(table.rows[i].cells[colIndex].children[0].value);
       
   }
-
-  console.log(JSON.stringify(json));
 
   var colsCount = table.rows[0].cells.length;
   console.log("colsCount : " + colsCount);
  
   colIndex++;
 
-  for (colIndex; colIndex<colsCount; colIndex++) {
+  for (colIndex; colIndex < colsCount; colIndex++) {
 
        var rule = {
         rule : []
@@ -411,12 +416,12 @@ function addColumn(currentColumn,afterOrBefore)
           actions : []
        };
 
-      for (var i=1; i<=conditionRowsCount; i++) {
+      for (var i = 1; i <= conditionRowsCount; i++) {
         conditions.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
       }
       
 
-      for (var i=conditionRowsCount+1; i<$( "#dtTable tr" ).length; i++) {
+      for (var i = conditionRowsCount+1; i < $( "#dtTable tr" ).length; i++) {
 
         actions.actions.push(table.rows[i].cells[colIndex].children[0].value);
       }
@@ -425,8 +430,6 @@ function addColumn(currentColumn,afterOrBefore)
       rule.rule.push(actions);
 
       console.log(JSON.stringify(rule));
-
-      json.rules.push(rule);
 
   }
   console.log("json : " + JSON.stringify(json));
