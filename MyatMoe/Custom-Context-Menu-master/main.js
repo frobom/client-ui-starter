@@ -104,6 +104,7 @@
   var text;
   var colCount = 1;
   var currentColumn;
+  var headerText = 0;
 
   /**
    * Initialise our application's code.
@@ -143,7 +144,7 @@
         e.preventDefault();
         //contextListener();
         //alert($(this).attr('id'));
-        row = $(this);        
+        row = $(this);                
 
         console.log("row : " + row.html());
         console.log("row : " + row);        
@@ -151,9 +152,16 @@
 
     $('#dtTable').on('contextmenu', 'td', function(){
       currentColumn = $(this).parent().children().index($(this));
-      text = $(this).parent().children(currentColumn).text();
-      alert('Column: ' + currentColumn);
+      console.log('Column: ' + currentColumn);
+      
+      var value = $("#header").find('th').eq(currentColumn).text();
+      console.log('selected column html : ' + value);
+      headerText = parseInt(value);
+      
+      console.log('Get Header text: ' + headerText);
   });
+
+  
 });
 
   /**
@@ -265,10 +273,11 @@
       addNewRow("below", row);
     }
     else if (link.getAttribute("data-action") == "Add Column Left") {
-      addColumn(currentColumn, 'before');
+      addColumn(currentColumn, 'before', headerText);
     }
     else if (link.getAttribute("data-action") == "Add Column Right") {
-      addColumn(currentColumn, 'after');
+      alert("headerText : " + headerText);
+      addColumn(currentColumn, 'after', headerText);
     }
     toggleMenuOff();
   }
@@ -279,7 +288,9 @@
     //console.log("selectedRow html: " + selectedRow.html());
     var table = document.getElementById("dtTable");
 
-    var html;    
+    var html;
+    var nextRowIndex = 0;
+    var r = null;    
 
     if (place == "above") {
 
@@ -294,18 +305,11 @@
       $(html).insertBefore(selectedRow);
 
       selectedRow.find("th").text(++text);
-      
-      var nextRowIndex = selectedRow.next().index();
+
+      nextRowIndex = selectedRow.next().index();
       //alert("index of next row of selectedRow : " + nextRowIndex);
 
-      var r = selectedRow.next();
-
-      while (nextRowIndex != -1) { 
-
-        r.find("th").text(++text);
-        r = r.next();
-        nextRowIndex = r.index();
-      }
+      r = selectedRow.next();   
           
      }
 
@@ -318,10 +322,19 @@
 
       html += "</tr>";
 
-      $(html).insertAfter(row);
-   }
+      $(html).insertAfter(selectedRow);
 
-     console.log("html : " + html);
+      r = selectedRow.next().next();
+      nextRowIndex = r.index();     
+    }
+
+   while (nextRowIndex != -1) {
+      r.find("th").text(++text);
+      r = r.next();
+      nextRowIndex = r.index();
+    }
+
+    console.log("html : " + html);
 
     console.log("==================");
   }
@@ -333,19 +346,22 @@
   //   $("tr:not(:first)").append("<td class='task'> <input type='text'> </td>");
   // }
 
-function addColumn(currentColumn,afterOrBefore)
+function addColumn(currentColumn,afterOrBefore,headerText)
 {
   // var headerRow = $('table tr:first th:nth-child(' + currentColumn+ ')');
   // alert("header : " + headerRow.html());
 
   //var header = "$(th:nth-child(" +currentColumn+ ")";
-  var header = $('table tr:first th:nth-child(' + currentColumn+ ')');
-  alert("header : " + header.html());
+  //var header = $('table tr:first th:nth-child(' + currentColumn+ ')');
+  var header = $('table tr:first th');
+  //alert("currentColumn in addColumn : " + currentColumn);
   
   if (afterOrBefore=='before') {
-    alert("before");
     //alert("$(headerRow[currentColumn]) : " + $(header).html());
-    $('<th>' + --text +'</th>').insertBefore($(header));
+    $('<th>' + --headerText +'</th>').insertBefore($(header[currentColumn]));
+  }
+  else {
+    $('<th>' + ++headerText +'</th>').insertAfter($(header[currentColumn]));
   }
 
   currentColumn--;
@@ -356,11 +372,11 @@ function addColumn(currentColumn,afterOrBefore)
           var header = $(value).find('th');
           if(afterOrBefore=='before')
             {
-              $('<td><input type="text"></td>').insertBefore($(cells[currentColumn]));
+              $('<td><input type="text" value="new"></td>').insertBefore($(cells[currentColumn]));
             }
            else
              {
-                $('<td><input type="text"></td>').insertAfter($(cells[currentColumn]));
+                $('<td><input type="text" value="new"></td>').insertAfter($(cells[currentColumn]));
               }
               //$(element).on('click', function () { add_img(); });
     });
