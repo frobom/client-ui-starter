@@ -156,7 +156,7 @@
       
       var value = $("#header").find('th').eq(currentColumn).text();
       console.log('selected column html : ' + value);
-      headerText = parseInt(value);
+      headerText = parseInt(value) || 0;
       
       console.log('Get Header text: ' + headerText);
   });
@@ -348,104 +348,117 @@
 
 function addColumn(currentColumn,afterOrBefore,headerText)
 {
-  // var headerRow = $('table tr:first th:nth-child(' + currentColumn+ ')');
-  // alert("header : " + headerRow.html());
-
-  //var header = "$(th:nth-child(" +currentColumn+ ")";
-  //var header = $('table tr:first th:nth-child(' + currentColumn+ ')');
+  var insertedHeader;
+  alert("currentColumn : " + currentColumn);
+  var colIndex = currentColumn - 1;
   var header = $('table tr:first th');
-  //alert("currentColumn in addColumn : " + currentColumn);
   
   if (afterOrBefore=='before') {
-    //alert("$(headerRow[currentColumn]) : " + $(header).html());
-    $('<th>' + --headerText +'</th>').insertBefore($(header[currentColumn]));
+    
+      $('<th>' + headerText +'</th>').insertBefore($(header[currentColumn]));
+      $(header[currentColumn]).text(++headerText);
+      insertedHeader = $(header[currentColumn]);      
   }
   else {
     $('<th>' + ++headerText +'</th>').insertAfter($(header[currentColumn]));
+    insertedHeader = $(header[currentColumn]).next();
   }
 
-  currentColumn--;
+  alert("insertedHeader : " + insertedHeader.html());   
+
+  if (insertedHeader.next().index() != -1) {    
+    var nextColHeader = insertedHeader.next();
+    //alert("index of nextColHeader : " + nextColHeader.index());    
+
+    while (nextColHeader.index() != -1) {
+      nextColHeader.text(++headerText);
+      alert("nextColHeader: " + nextColHeader.html());
+      nextColHeader = nextColHeader.next();
+    }
+    
+  } 
+
+  
    var allRows=$('table').find('tr');
     $.each(allRows,function(index,value){
-          alert("value : " + value);
+          //alert("value : " + value);
           var cells = $(value).find('td');
           var header = $(value).find('th');
           if(afterOrBefore=='before')
             {
-              $('<td><input type="text" value="new"></td>').insertBefore($(cells[currentColumn]));
+              $('<td><input type="text" value="new"></td>').insertBefore($(cells[colIndex]));
             }
            else
              {
-                $('<td><input type="text" value="new"></td>').insertAfter($(cells[currentColumn]));
+                $('<td><input type="text" value="new"></td>').insertAfter($(cells[colIndex]));
               }
               //$(element).on('click', function () { add_img(); });
     });
+
+} 
+
+function createJsonObject() {
+
+var json = {
+  conditions : [],
+  actions : [],
+  rules :[]  
+}; 
+
+var table = document.getElementById("dtTable");
+
+var conditionRowsCount = $( "#condition tr" ).length;
+var colIndex = 1;
+
+console.log("conditionRowsCount : " + conditionRowsCount);
+
+for (var i = 1; i <= conditionRowsCount; i++) {
+
+  json.conditions.push(table.rows[i].cells[colIndex].children[0].value);
+ 
 }
 
- 
+var totalRowsCount = $( "#dtTable tr" ).length;
 
-  function createJsonObject() {
+for (var i = conditionRowsCount+1; i < totalRowsCount; i++) {
 
-  var json = {
-    conditions : [],
-    actions : [],
-    rules :[]  
-  }; 
+    json.actions.push(table.rows[i].cells[colIndex].children[0].value);
+    
+}
 
-  var table = document.getElementById("dtTable");
+var colsCount = table.rows[0].cells.length;
+console.log("colsCount : " + colsCount);
 
-  var conditionRowsCount = $( "#condition tr" ).length;
-  var colIndex = 1;
+colIndex++;
 
-  console.log("conditionRowsCount : " + conditionRowsCount);
-  
-  for (var i = 1; i <= conditionRowsCount; i++) {
+for (colIndex; colIndex < colsCount; colIndex++) {
 
-    json.conditions.push(table.rows[i].cells[colIndex].children[0].value);
-   
-  }
-  
-  var totalRowsCount = $( "#dtTable tr" ).length;
+     var rule = {
+      rule : []
+     };
 
-  for (var i = conditionRowsCount+1; i < totalRowsCount; i++) {
+     var conditions = {
+        conditions : []
+     };
 
-      json.actions.push(table.rows[i].cells[colIndex].children[0].value);
-      
-  }
+     var actions = {
+        actions : []
+     };
 
-  var colsCount = table.rows[0].cells.length;
-  console.log("colsCount : " + colsCount);
- 
-  colIndex++;
+    for (var i = 1; i <= conditionRowsCount; i++) {
+      conditions.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
+    }
+    
 
-  for (colIndex; colIndex < colsCount; colIndex++) {
+    for (var i = conditionRowsCount+1; i < $( "#dtTable tr" ).length; i++) {
 
-       var rule = {
-        rule : []
-       };
- 
-       var conditions = {
-          conditions : []
-       };
+      actions.actions.push(table.rows[i].cells[colIndex].children[0].value);
+    }
 
-       var actions = {
-          actions : []
-       };
+    rule.rule.push(conditions);
+    rule.rule.push(actions);
 
-      for (var i = 1; i <= conditionRowsCount; i++) {
-        conditions.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
-      }
-      
-
-      for (var i = conditionRowsCount+1; i < $( "#dtTable tr" ).length; i++) {
-
-        actions.actions.push(table.rows[i].cells[colIndex].children[0].value);
-      }
-
-      rule.rule.push(conditions);
-      rule.rule.push(actions);
-
-      console.log(JSON.stringify(rule));
+    console.log(JSON.stringify(rule));
 
   }
   console.log("json : " + JSON.stringify(json));

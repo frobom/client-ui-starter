@@ -4,9 +4,15 @@
   box-sizing: border-box;
 }
 
+table {
+  text-align: center;
+  margin-left: 30px;
+  margin-top: 30px;
+}
+
 
 td, th {
-  width: 2rem;
+  width: 6rem;
   height: 2rem;
   border: 1px solid;  
 }
@@ -22,8 +28,16 @@ th {
   border-bottom: 3px solid blue; 
 }
 
-input {
+input[type="text"] {
   height: 40px;
+  padding: 3px;
+  border: solid 1px #dcdcdc;
+}
+
+input[type="text"]:focus,
+input[type="text"].focus {
+  border: solid 1px #707070;
+  box-shadow: 0 0 5px 1px blue;
 }
 
 body {
