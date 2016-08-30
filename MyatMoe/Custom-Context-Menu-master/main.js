@@ -101,7 +101,7 @@
   var windowHeight;
 
   var row;
-  var colCount = 1;
+  //var colCount = 1;
   var currentColumn;
   var headerText = 0;
   var html;
@@ -261,8 +261,7 @@
     if (link.getAttribute("data-action").includes("Row")) {
       headerText = row.find("th").text();
       console.log("headerText : " + headerText);
-    }        
-
+    }
     if (link.getAttribute("data-action") == "Add Row Above") {
       addNewRow("above", row);
     }
@@ -274,7 +273,46 @@
     }
     else if (link.getAttribute("data-action") == "Add Column Right") {
       addColumn(currentColumn, 'after', headerText);
-    }    
+    }
+    else if (link.getAttribute("data-action") == "Delete Row") {
+      alert("row.index() : " + row.index());
+      if (row.index() != -1) {
+        updateRowHeaders();
+      }
+      row.remove();      
+    }
+     else if (link.getAttribute("data-action") == "Delete Column") {
+
+      //alert("last cell index : " + $("table tr td:last-child").index());
+
+      if (currentColumn != $("table tr td:last-child").index()) {
+        
+        var h = $("table th").eq(currentColumn).next();
+
+        while(h.index() != -1) {
+          h.text(parseInt(h.text())-1);
+          h = h.next();
+        }
+
+      }
+
+      $("table").find('tr').each(function(e, row) {
+        //alert("row : " + $(row).html());
+        $(row).find('th, td').eq(currentColumn).remove();
+      });
+
+    }     
+  }
+
+  function updateRowHeaders() {
+    var conditionRowsCount = $( "#condition tr" ).length;
+    
+      var r = row.next();
+      while (r.index() != -1) {
+        r.find('th').text(parseInt(r.find('th').text())-1);
+        r = r.next();
+      }   
+
   }
 
   function addNewRow( place, selectedRow ) {
@@ -344,10 +382,7 @@ function addColumn(currentColumn,afterOrBefore,headerText) {
   }
   else {
     insertedHeader = addNewColumnHeader(afterOrBefore, currentColumn, ++headerText, insertedHeader);
-  }     
-  //alert("insertedHeader : " + insertedHeader.html());
-
-  alert("headerText in addNewColumnHeader : " + headerText);   
+  }   
 
   if (insertedHeader.next().index() != -1) {
     updateOtherColumnHeader(insertedHeader, headerText);   
@@ -367,7 +402,7 @@ function addNewColumnHeader(afterOrBefore, currentColumn, headerText, insertedHe
   }
   else {
 
-    alert("headerText in addNewColumnHeader : " + headerText);
+    //alert("headerText in addNewColumnHeader : " + headerText);
     $('<th>' + headerText +'</th>').insertAfter($(header[currentColumn]));
     return $(header[currentColumn]).next();
   }
@@ -377,9 +412,9 @@ function updateOtherColumnHeader(insertedHeader, headerText) {
   var nextColHeader = insertedHeader.next();     
 
   while (nextColHeader.index() != -1) {
-    alert("index of nextColHeader(old colum) : " + nextColHeader.index());
+    //alert("index of nextColHeader(old colum) : " + nextColHeader.index());
     nextColHeader.text(++headerText);
-    alert("headerText for old column : " + headerText);
+    //alert("headerText for old column : " + headerText);
     //alert("nextColHeader: " + nextColHeader.html());
     nextColHeader = nextColHeader.next();
   }
@@ -423,8 +458,11 @@ colIndex++;
 
 addRules(json, colIndex, conditionRowsCount, table);
 
-console.log("json : " + JSON.stringify(json));
-
+var jsonObject = new Object();
+jsonObject.dt = json;
+  
+console.log("jsonObject : " + JSON.stringify(jsonObject));
+  
 }
 
 function addConditions(json, colIndex, conditionRowsCount, table) {
