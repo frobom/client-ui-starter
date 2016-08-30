@@ -100,11 +100,11 @@
   var windowWidth;
   var windowHeight;
 
-  var rowId;
   var row;
   var text;
   var colCount = 1;
   var currentColumn;
+  var headerText = 0;
 
   /**
    * Initialise our application's code.
@@ -142,26 +142,26 @@
   $(function() {
     $('table').on('contextmenu', 'tr', function(e) {
         e.preventDefault();
-        contextListener();
+        //contextListener();
         //alert($(this).attr('id'));
-        rowId = $(this).attr('id');
-        row = $(this);        
+        row = $(this);                
 
-        console.log("rowId: " + rowId);
         console.log("row : " + row.html());
-        console.log("row : " + row);
-        //console.log("parent of row : " + row.parent().html());        
+        console.log("row : " + row);        
     });
 
     $('#dtTable').on('contextmenu', 'td', function(){
       currentColumn = $(this).parent().children().index($(this));
-        alert('Column: ' + currentColumn);
-
-        toggleMenuOn();
-        //text = taskItemInContext.innerHTML;
-        //console.log(text);
-        positionMenu(e);
+      console.log('Column: ' + currentColumn);
+      
+      var value = $("#header").find('th').eq(currentColumn).text();
+      console.log('selected column html : ' + value);
+      headerText = parseInt(value) || 0;
+      
+      console.log('Get Header text: ' + headerText);
   });
+
+  
 });
 
   /**
@@ -273,10 +273,11 @@
       addNewRow("below", row);
     }
     else if (link.getAttribute("data-action") == "Add Column Left") {
-      addColumn(currentColumn, 'before');
+      addColumn(currentColumn, 'before', headerText);
     }
     else if (link.getAttribute("data-action") == "Add Column Right") {
-      addColumn(currentColumn, 'after');
+      alert("headerText : " + headerText);
+      addColumn(currentColumn, 'after', headerText);
     }
     toggleMenuOff();
   }
@@ -287,14 +288,16 @@
     //console.log("selectedRow html: " + selectedRow.html());
     var table = document.getElementById("dtTable");
 
-    var html;    
+    var html;
+    var nextRowIndex = 0;
+    var r = null;    
 
     if (place == "above") {
 
-      html = "<tr> <th class='task'>" + text + "</th>";
+      html = "<tr class='task'> <th>" + text + "</th>";
 
       for (var i = 1; i < table.rows[0].cells.length; i++) {
-        html += "<td class='task'> <input type='text' class='data'> </td>";      
+        html += "<td class='task'> <input type='text'> </td>";      
       }
  
       html += "</tr>";      
@@ -302,34 +305,36 @@
       $(html).insertBefore(selectedRow);
 
       selectedRow.find("th").text(++text);
-      
-      var nextRowIndex = selectedRow.next().index();
+
+      nextRowIndex = selectedRow.next().index();
       //alert("index of next row of selectedRow : " + nextRowIndex);
 
-      var r = selectedRow.next();
-
-      while (nextRowIndex != -1) { 
-
-        r.find("th").text(++text);
-        r = r.next();
-        nextRowIndex = r.index();
-      }
+      r = selectedRow.next();   
           
      }
 
    else {
-      html = "<tr> <th class='task'>" + (++text) + "</th>";
+      html = "<tr class='task'> <th>" + (++text) + "</th>";
 
       for (var i = 1; i < table.rows[0].cells.length; i++) {
-        html += "<td class='task'> <input type='text' class='data'> </td>";      
+        html += "<td> <input type='text'> </td>";      
       }
 
       html += "</tr>";
 
-      $(html).insertAfter(row);
-   }
+      $(html).insertAfter(selectedRow);
 
-     console.log("html : " + html);
+      r = selectedRow.next().next();
+      nextRowIndex = r.index();     
+    }
+
+   while (nextRowIndex != -1) {
+      r.find("th").text(++text);
+      r = r.next();
+      nextRowIndex = r.index();
+    }
+
+    console.log("html : " + html);
 
     console.log("==================");
   }
@@ -341,92 +346,119 @@
   //   $("tr:not(:first)").append("<td class='task'> <input type='text'> </td>");
   // }
 
-function addColumn(currentColumn,afterOrBefore)
+function addColumn(currentColumn,afterOrBefore,headerText)
 {
-  currentColumn--;
+  var insertedHeader;
+  alert("currentColumn : " + currentColumn);
+  var colIndex = currentColumn - 1;
+  var header = $('table tr:first th');
+  
+  if (afterOrBefore=='before') {
+    
+      $('<th>' + headerText +'</th>').insertBefore($(header[currentColumn]));
+      $(header[currentColumn]).text(++headerText);
+      insertedHeader = $(header[currentColumn]);      
+  }
+  else {
+    $('<th>' + ++headerText +'</th>').insertAfter($(header[currentColumn]));
+    insertedHeader = $(header[currentColumn]).next();
+  }
+
+  alert("insertedHeader : " + insertedHeader.html());   
+
+  if (insertedHeader.next().index() != -1) {    
+    var nextColHeader = insertedHeader.next();
+    //alert("index of nextColHeader : " + nextColHeader.index());    
+
+    while (nextColHeader.index() != -1) {
+      nextColHeader.text(++headerText);
+      alert("nextColHeader: " + nextColHeader.html());
+      nextColHeader = nextColHeader.next();
+    }
+    
+  } 
+
+  
    var allRows=$('table').find('tr');
     $.each(allRows,function(index,value){
-          alert("value : " + value);
-          var cells=$(value).find('td');
+          //alert("value : " + value);
+          var cells = $(value).find('td');
+          var header = $(value).find('th');
           if(afterOrBefore=='before')
-                  {
-               $('<td><input type="text"></td>').insertBefore($(cells[currentColumn]));
-               }
+            {
+              $('<td><input type="text" value="new"></td>').insertBefore($(cells[colIndex]));
+            }
            else
              {
-                $('<td><input type="text"></td>').insertAfter($(cells[currentColumn]));
-}
+                $('<td><input type="text" value="new"></td>').insertAfter($(cells[colIndex]));
+              }
+              //$(element).on('click', function () { add_img(); });
     });
+
+} 
+
+function createJsonObject() {
+
+var json = {
+  conditions : [],
+  actions : [],
+  rules :[]  
+}; 
+
+var table = document.getElementById("dtTable");
+
+var conditionRowsCount = $( "#condition tr" ).length;
+var colIndex = 1;
+
+console.log("conditionRowsCount : " + conditionRowsCount);
+
+for (var i = 1; i <= conditionRowsCount; i++) {
+
+  json.conditions.push(table.rows[i].cells[colIndex].children[0].value);
+ 
 }
 
- 
+var totalRowsCount = $( "#dtTable tr" ).length;
 
-  function createJsonObject() {
+for (var i = conditionRowsCount+1; i < totalRowsCount; i++) {
 
-  var json = {
-    conditions : [],
-    actions : [],
-    rules :[]  
-  }; 
+    json.actions.push(table.rows[i].cells[colIndex].children[0].value);
+    
+}
 
-  var table = document.getElementById("dtTable");
+var colsCount = table.rows[0].cells.length;
+console.log("colsCount : " + colsCount);
 
-  var conditionRowsCount = $( "#condition tr" ).length;
-  var colIndex = 1;
+colIndex++;
 
-  console.log("conditionRowsCount : " + conditionRowsCount);
-  
-  for (var i=1; i<=conditionRowsCount; i++) {
+for (colIndex; colIndex < colsCount; colIndex++) {
 
-    json.conditions.push(table.rows[i].cells[colIndex].children[0].value);
-   
-  }
-  
-  var totalRowsCount = $( "#dtTable tr" ).length;
+     var rule = {
+      rule : []
+     };
 
-  for (var i=conditionRowsCount+1; i<totalRowsCount; i++) {
+     var conditions = {
+        conditions : []
+     };
 
-      json.actions.push(table.rows[i].cells[colIndex].children[0].value);
-      
-  }
+     var actions = {
+        actions : []
+     };
 
-  console.log(JSON.stringify(json));
+    for (var i = 1; i <= conditionRowsCount; i++) {
+      conditions.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
+    }
+    
 
-  var colsCount = table.rows[0].cells.length;
-  console.log("colsCount : " + colsCount);
- 
-  colIndex++;
+    for (var i = conditionRowsCount+1; i < $( "#dtTable tr" ).length; i++) {
 
-  for (colIndex; colIndex<colsCount; colIndex++) {
+      actions.actions.push(table.rows[i].cells[colIndex].children[0].value);
+    }
 
-       var rule = {
-        rule : []
-       };
- 
-       var conditions = {
-          conditions : []
-       };
+    rule.rule.push(conditions);
+    rule.rule.push(actions);
 
-       var actions = {
-          actions : []
-       };
-
-      for (var i=1; i<=conditionRowsCount; i++) {
-        conditions.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
-      }
-      
-
-      for (var i=conditionRowsCount+1; i<$( "#dtTable tr" ).length; i++) {
-
-        actions.actions.push(table.rows[i].cells[colIndex].children[0].value);
-      }
-
-      rule.rule.push(conditions);
-      rule.rule.push(actions);
-
-      console.log(JSON.stringify(rule));
-
-      json.rules.push(rule);
+    console.log(JSON.stringify(rule));
 
   }
   console.log("json : " + JSON.stringify(json));

@@ -5,13 +5,13 @@ $( document ).ready(function(){
 
     
 
-    $('#dtTable').on('focusin', 'input', function(){
-    	$(this).css("border", "2px solid yellow");
-	});
+ //    $('#dtTable').on('focusin', 'input', function(){
+ //    	$(this).css("border", "3px solid yellow");
+	// });
 
-	$('#dtTable').on('focusout', 'input', function(){
-    	$(this).css("border", "1px solid");
-	});
+	// $('#dtTable').on('focusout', 'input', function(){
+ //    	$(this).css("border", "1px solid");
+	// });
 
 	// $('#dtTable').on('click', 'td', function(){
  //    	var colIndex = $(this).parent().children().index($(this));
