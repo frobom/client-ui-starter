@@ -101,10 +101,10 @@
   var windowHeight;
 
   var row;
-  var text;
-  var colCount = 1;
+  //var colCount = 1;
   var currentColumn;
   var headerText = 0;
+  var html;
 
   /**
    * Initialise our application's code.
@@ -129,8 +129,6 @@
       if ( taskItemInContext ) {
         e.preventDefault();
         toggleMenuOn();
-        //text = taskItemInContext.innerHTML;
-        //console.log(text);
         positionMenu(e);        
       } else {
         taskItemInContext = null;
@@ -142,25 +140,21 @@
   $(function() {
     $('table').on('contextmenu', 'tr', function(e) {
         e.preventDefault();
-        //contextListener();
-        //alert($(this).attr('id'));
         row = $(this);                
 
         console.log("row : " + row.html());
         console.log("row : " + row);        
     });
 
-    $('#dtTable').on('contextmenu', 'td', function(){
+    $('table').on('contextmenu', 'td', function(){
       currentColumn = $(this).parent().children().index($(this));
-      console.log('Column: ' + currentColumn);
+      console.log('currentColumn: ' + currentColumn);
       
-      var value = $("#header").find('th').eq(currentColumn).text();
-      console.log('selected column html : ' + value);
-      headerText = parseInt(value) || 0;
+      var text = $("#header").find('th').eq(currentColumn).text();      
+      headerText = parseInt(text) || 0;
       
       console.log('Get Header text: ' + headerText);
   });
-
   
 });
 
@@ -261,11 +255,13 @@
     
     console.log( "Task ID - " + taskItemInContext.getAttribute("data-id") + ", Task action - " + link.getAttribute("data-action"));
     console.log("currentColumn " + currentColumn);
-    
-    
-    text = row.find("th").text();
-    console.log("text : " + text);    
 
+    toggleMenuOff();
+    
+    if (link.getAttribute("data-action").includes("Row")) {
+      headerText = row.find("th").text();
+      console.log("headerText : " + headerText);
+    }
     if (link.getAttribute("data-action") == "Add Row Above") {
       addNewRow("above", row);
     }
@@ -276,60 +272,79 @@
       addColumn(currentColumn, 'before', headerText);
     }
     else if (link.getAttribute("data-action") == "Add Column Right") {
-      alert("headerText : " + headerText);
       addColumn(currentColumn, 'after', headerText);
     }
-    toggleMenuOff();
+    else if (link.getAttribute("data-action") == "Delete Row") {
+      alert("row.index() : " + row.index());
+      if (row.index() != -1) {
+        updateRowHeaders();
+      }
+      row.remove();      
+    }
+     else if (link.getAttribute("data-action") == "Delete Column") {
+
+      //alert("last cell index : " + $("table tr td:last-child").index());
+
+      if (currentColumn != $("table tr td:last-child").index()) {
+        
+        var h = $("table th").eq(currentColumn).next();
+
+        while(h.index() != -1) {
+          h.text(parseInt(h.text())-1);
+          h = h.next();
+        }
+
+      }
+
+      $("table").find('tr').each(function(e, row) {
+        //alert("row : " + $(row).html());
+        $(row).find('th, td').eq(currentColumn).remove();
+      });
+
+    }     
   }
 
+  function updateRowHeaders() {
+    var conditionRowsCount = $( "#condition tr" ).length;
+    
+      var r = row.next();
+      while (r.index() != -1) {
+        r.find('th').text(parseInt(r.find('th').text())-1);
+        r = r.next();
+      }   
+
+  }
 
   function addNewRow( place, selectedRow ) {
-    console.log("row in addNewRow : " + selectedRow);
-    //console.log("selectedRow html: " + selectedRow.html());
-    var table = document.getElementById("dtTable");
-
-    var html;
+    
     var nextRowIndex = 0;
     var r = null;    
 
     if (place == "above") {
 
-      html = "<tr class='task'> <th>" + text + "</th>";
-
-      for (var i = 1; i < table.rows[0].cells.length; i++) {
-        html += "<td class='task'> <input type='text'> </td>";      
-      }
- 
-      html += "</tr>";      
+      prepareHtmlToInsertRow(headerText);            
 
       $(html).insertBefore(selectedRow);
 
-      selectedRow.find("th").text(++text);
+      selectedRow.find("th").text(++headerText);
 
-      nextRowIndex = selectedRow.next().index();
-      //alert("index of next row of selectedRow : " + nextRowIndex);
-
-      r = selectedRow.next();   
+      r = selectedRow.next();        
           
      }
 
    else {
-      html = "<tr class='task'> <th>" + (++text) + "</th>";
 
-      for (var i = 1; i < table.rows[0].cells.length; i++) {
-        html += "<td> <input type='text'> </td>";      
-      }
-
-      html += "</tr>";
+      prepareHtmlToInsertRow(++headerText);      
 
       $(html).insertAfter(selectedRow);
 
-      r = selectedRow.next().next();
-      nextRowIndex = r.index();     
+      r = selectedRow.next().next();           
     }
 
+   nextRowIndex = r.index();
+
    while (nextRowIndex != -1) {
-      r.find("th").text(++text);
+      r.find("th").text(++headerText);
       r = r.next();
       nextRowIndex = r.index();
     }
@@ -339,6 +354,17 @@
     console.log("==================");
   }
 
+  function prepareHtmlToInsertRow( headerText ) {    
+    var table = document.getElementById("dtTable");
+
+    html = "<tr class='task'> <th>" + headerText + "</th>";
+
+    for (var i = 1; i < table.rows[0].cells.length; i++) {
+      html += "<td class='task'> <input type='text'> </td>";      
+    }
+
+    html += "</tr>";
+  }
 
   // function addColumn() {
   //   console.log("new Column number : " + ++colCount);
@@ -346,56 +372,71 @@
   //   $("tr:not(:first)").append("<td class='task'> <input type='text'> </td>");
   // }
 
-function addColumn(currentColumn,afterOrBefore,headerText)
-{
+function addColumn(currentColumn,afterOrBefore,headerText) {
+
   var insertedHeader;
-  alert("currentColumn : " + currentColumn);
   var colIndex = currentColumn - 1;
+
+  if (afterOrBefore=='before') {
+    insertedHeader = addNewColumnHeader(afterOrBefore, currentColumn, headerText++, insertedHeader);
+  }
+  else {
+    insertedHeader = addNewColumnHeader(afterOrBefore, currentColumn, ++headerText, insertedHeader);
+  }   
+
+  if (insertedHeader.next().index() != -1) {
+    updateOtherColumnHeader(insertedHeader, headerText);   
+  }
+
+  addCells(colIndex, afterOrBefore);
+}
+
+function addNewColumnHeader(afterOrBefore, currentColumn, headerText, insertedHeader) {
   var header = $('table tr:first th');
   
   if (afterOrBefore=='before') {
     
-      $('<th>' + headerText +'</th>').insertBefore($(header[currentColumn]));
-      $(header[currentColumn]).text(++headerText);
-      insertedHeader = $(header[currentColumn]);      
+    $('<th>' + headerText +'</th>').insertBefore($(header[currentColumn]));
+    $(header[currentColumn]).text(++headerText);
+    return $(header[currentColumn]);      
   }
   else {
-    $('<th>' + ++headerText +'</th>').insertAfter($(header[currentColumn]));
-    insertedHeader = $(header[currentColumn]).next();
+
+    //alert("headerText in addNewColumnHeader : " + headerText);
+    $('<th>' + headerText +'</th>').insertAfter($(header[currentColumn]));
+    return $(header[currentColumn]).next();
   }
+}
 
-  alert("insertedHeader : " + insertedHeader.html());   
+function updateOtherColumnHeader(insertedHeader, headerText) {
+  var nextColHeader = insertedHeader.next();     
 
-  if (insertedHeader.next().index() != -1) {    
-    var nextColHeader = insertedHeader.next();
-    //alert("index of nextColHeader : " + nextColHeader.index());    
+  while (nextColHeader.index() != -1) {
+    //alert("index of nextColHeader(old colum) : " + nextColHeader.index());
+    nextColHeader.text(++headerText);
+    //alert("headerText for old column : " + headerText);
+    //alert("nextColHeader: " + nextColHeader.html());
+    nextColHeader = nextColHeader.next();
+  }
+}
 
-    while (nextColHeader.index() != -1) {
-      nextColHeader.text(++headerText);
-      alert("nextColHeader: " + nextColHeader.html());
-      nextColHeader = nextColHeader.next();
-    }
-    
-  } 
+function addCells(colIndex, afterOrBefore) {
 
-  
-   var allRows=$('table').find('tr');
+  var allRows=$('table').find('tr');
     $.each(allRows,function(index,value){
           //alert("value : " + value);
           var cells = $(value).find('td');
-          var header = $(value).find('th');
           if(afterOrBefore=='before')
             {
-              $('<td><input type="text" value="new"></td>').insertBefore($(cells[colIndex]));
+              $('<td><input type="text"></td>').insertBefore($(cells[colIndex]));
             }
            else
              {
-                $('<td><input type="text" value="new"></td>').insertAfter($(cells[colIndex]));
+                $('<td><input type="text"></td>').insertAfter($(cells[colIndex]));
               }
               //$(element).on('click', function () { add_img(); });
     });
-
-} 
+}
 
 function createJsonObject() {
 
@@ -406,30 +447,46 @@ var json = {
 }; 
 
 var table = document.getElementById("dtTable");
-
-var conditionRowsCount = $( "#condition tr" ).length;
 var colIndex = 1;
+var conditionRowsCount = $( "#condition tr" ).length;
 
-console.log("conditionRowsCount : " + conditionRowsCount);
+addConditions(json, colIndex, conditionRowsCount, table);
 
-for (var i = 1; i <= conditionRowsCount; i++) {
-
-  json.conditions.push(table.rows[i].cells[colIndex].children[0].value);
- 
-}
-
-var totalRowsCount = $( "#dtTable tr" ).length;
-
-for (var i = conditionRowsCount+1; i < totalRowsCount; i++) {
-
-    json.actions.push(table.rows[i].cells[colIndex].children[0].value);
-    
-}
-
-var colsCount = table.rows[0].cells.length;
-console.log("colsCount : " + colsCount);
+addActions(json, colIndex, conditionRowsCount+1, table);
 
 colIndex++;
+
+addRules(json, colIndex, conditionRowsCount, table);
+
+var jsonObject = new Object();
+jsonObject.dt = json;
+  
+console.log("jsonObject : " + JSON.stringify(jsonObject));
+  
+}
+
+function addConditions(json, colIndex, conditionRowsCount, table) {
+  console.log("conditionRowsCount : " + conditionRowsCount);
+
+  for (var i = 1; i <= conditionRowsCount; i++) {
+
+    json.conditions.push(table.rows[i].cells[colIndex].children[0].value);
+   
+  }
+}
+
+function addActions(json, colIndex, startIndex, table) {
+  var totalRowsCount = $( "#dtTable tr" ).length;
+
+  for (var i = startIndex; i < totalRowsCount; i++) {
+
+      json.actions.push(table.rows[i].cells[colIndex].children[0].value);      
+  }
+}
+
+function addRules(json, colIndex, conditionRowsCount, table){
+  var colsCount = table.rows[0].cells.length;
+console.log("colsCount : " + colsCount);
 
 for (colIndex; colIndex < colsCount; colIndex++) {
 
@@ -447,8 +504,7 @@ for (colIndex; colIndex < colsCount; colIndex++) {
 
     for (var i = 1; i <= conditionRowsCount; i++) {
       conditions.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
-    }
-    
+    }    
 
     for (var i = conditionRowsCount+1; i < $( "#dtTable tr" ).length; i++) {
 
@@ -457,11 +513,9 @@ for (colIndex; colIndex < colsCount; colIndex++) {
 
     rule.rule.push(conditions);
     rule.rule.push(actions);
-
-    console.log(JSON.stringify(rule));
-
+    json.rules.push(rule);
+    //console.log(JSON.stringify(rule));
   }
-  console.log("json : " + JSON.stringify(json));
 }
  
   /**
