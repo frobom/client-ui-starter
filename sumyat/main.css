@@ -17,31 +17,34 @@ html, body{
 	width:100%;
 	height: 5%;
 	position: relative;
-	background-color: cyan;
+	background-color: #87CEEB;
 }
 
 .contentDiv{
 	width:100%;
 	height: 95%;
-	position: relative;
-	background-color: #DFDFDF;
+	position: relative;	
 }
 
 .left{
-	position: absolute;
-	left:0;
-	width:10%;
-	height: 96.5%;
-	padding: 10px;		
-	overflow: auto;
+	position:absolute;
+	left: 0;
+	width: 190px;
+	height:100%;
+	padding: 0px 0px 0px 0px;
+	margin: 0px 0px 0px 0px;
+	border-right: 1px solid gray;	
+	overflow:auto;
+	/*background-color: violet;*/
 }
 
 .center{
-	position: absolute;
-	left: 12%;
-	width: 73%;
-	height: 100%;		
-	border-left: 1px solid gray;	
+	position:absolute;
+	left:190px;
+	width: 69.5%;
+	height:84%;	
+	border-right: 1px solid gray;	
+	overflow:auto;
 	/*background-color: pink;*/
 }
 
@@ -54,93 +57,47 @@ html, body{
 	border-right: 1px solid gray;	
 }
 
-.leftOfCenter{
-	position:absolute;
-	left: 0;
-	width: 170px;
-	height:100%;
-	padding:10px;
-	/*background-color:blue;*/
-	border-right: 1px solid gray;	
-	overflow:auto;
-}
-
-.rightOfCenter{
-	position:absolute;
-	right: 0;
-	width: 76.7%;
-	height:80%;
-	padding:10px;
-	border-right: 1px solid gray;	
-	/*background-color:magenta;*/
-	overflow:auto;
-}
-
-.rightBottomOfCenter{
+.bottomOfCenter{
 	position:absolute;
 	bottom: 0;
-	right: 0;
-	width: 76.5%;
-	height:74px;
-	padding:10px;
+	left:190px;
+	width: 69.5%;
+	height:90px;	
 	border-top: 1px solid gray;
 	border-right: 1px solid gray;
 	border-left: 1px solid gray;	
-	/*background-color:wheat;*/
-	overflow:auto;
 	overflow-x: hidden;
 	overflow-y: hidden;	
+	/*background-color: yellow;*/
 }
 
 .titleMenu{
 	position:absolute;
 	left:0;
+	top:0;
 	width:170px;
-	height:3%;
+	height:20px;
 	padding:10px;
-	/*background-color:wheat;*/
+	background-color:#ADD8E6;
 }
 
-.newProjectCreateDiv{
+.newProjectCreate{
 	position:absolute;
-	top:9%;
+	top:7%;
 	left:0px;
 	width:170px;
-	height:84%;
+	height:86%;
 	padding:10px;
 	overflow: auto;
-	/*background-color:#EDFDEF;*/
 }
 
-
-.button {
-	padding: 1px 1px;
-	font-size: 14px;
-	text-align: center;
-	cursor: pointer;
-	outline: none;
-	color: #fff;
-	background-color: #4CAF50;
-	border: none;
-	border-radius: 3px;   
-	overflow: auto; 
-}
-
-.button:hover {background-color: #3e8e41}
-
-.button:active {
-	background-color: #3e8e41;
-	box-shadow: 0 5px #666;
-	transform: translateY(4px);
-}
-
-#title_bar{
-	background: orange;
-	height:25px;
+#title_barID{
+	background:	#ADD8E6;
+	height:35px;
 	width:100%;	
 }
 
-#restoreButton{	
+#restoreButtonID{	
 	position: absolute;
 	right: 5px;
 	width: 25px;
@@ -148,26 +105,58 @@ html, body{
 	cursor:pointer;
 }
 
+#minusID{
+	cursor:pointer;
+}
+
 .createButton{
 	position: absolute;
 	text-align: center;
-	right: 5px;
+	top:10px;
+	right: 15px;
 	width: 20px;
 	height: 20px;	
-	cursor:pointer;	
+	cursor:pointer;		
 }
 
-#box{
+#boxID{
 	overflow: auto;     
 	padding: 5px;
-	height:94%;
-	/*background: gray;*/
+	height:92.3%;
+	/*background-color: violet;*/
 }
 
+ul {                                 
+	list-style-type: none;  
+	padding: 0;             
+	margin: 0;              
+}                                   
 
-
-li {
-	list-style-type: none;
+li {                                 
+	padding-left: 0.5em;    
 }
 
+#treeID li:hover {
+	background-color: #DCDCDC;
+	width: 100%;
+}
 
+#treeID .ui-selected {
+	background: #87CEEB;
+	/*color: black; */
+}
+
+#treeID { 
+	list-style-type: none; 
+	margin: 0; 
+	padding: 0; 
+	width: 100%; 
+}
+
+#treeID li {
+	margin: 0px; 
+	padding: 3px; 
+	font-size:20; 
+	height: 30; 
+	cursor:pointer
+}
