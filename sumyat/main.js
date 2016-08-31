@@ -1,144 +1,51 @@
+$.noConflict();
+
 $(document).ready( function() {
 
-	$("#restoreButton").click(function(){
+	$("#restoreButtonID").click(function(){
 
 		if($(this).html() == "-"){
 
 			$(this).html("+");
 
-			$("#rightDiv").parent().css({position: 'absolute'});
+			$("#rightID").parent().css({position: 'absolute'});
 
-			$("#rightDiv").css({bottom:0, right: 0,width:"10%", height:"25px",position:'absolute'});
+			$("#rightID").css({bottom:0, right: 0,width:"5%", height:"25px",position:'absolute'});
 
-			$(".center").css({width:"100%"});
+			$(".center").css({width:"84.5%"});
 
-			$(".rightOfCenter").css({width:"83%"});
+			$(".bottomOfCenter").css({width:"84.5%"});
 
-			$(".rightBottomOfCenter").css({width:"82.9%"});
 		}
 
 		else{
 
 			$(this).html("-");
 
-			$("#rightDiv").parent().css({position: 'absolute'});
+			$("#rightID").parent().css({position: 'absolute'});
 
-			$("#rightDiv").css({right:0,height:'100%',width:'15%',position:'absolute'});
+			$("#rightID").css({right:0,height:'100%',width:'15%',position:'absolute'});
 
-			$(".center").css({width:"73%"});
+			$(".center").css({width:" 69.5%"});	
 
-			$(".rightOfCenter").css({width:"76.7%"});	
-
-			$(".rightBottomOfCenter").css({width:"76.5%"});
+			$(".bottomOfCenter").css({width:"69.5%"});
 		}	
 
 	});
 
 });
 
-var myState=0;
+$(document).ready( function() {
 
-$(document).ready(function(){	
-
-	$('#myBtn1').click(function(){
-
-		if (myState==0){
-
-			leftAndRightCreateDiv();
-
-			myState=1;
-
-		} else {
-
-			$( this ).replaceWith( $( this ) );	
-
-		}
-
-	});
-
-});
-
-$(document).ready(function(){
-
-	$('#myBtn2').click(function(){
-
-		if (myState==0){
-
-			leftAndRightCreateDiv();
-
-			myState=1;
-
-		} else {
-
-			$( this ).replaceWith( $( this ) );	
-
-		}
-
-	});
-
-});
-
-$(document).ready(function(){	
-
-	$('#myBtn3').click(function(){
-
-		if (myState==0){
-
-			leftAndRightCreateDiv();
-
-			myState=1;
-
-		} else {
-
-			$( this ).replaceWith( $( this ) );	
-
-		}
-
-	});
-
-});
-
-function leftAndRightCreateDiv(){
-
-	var leftOfCenter = $('<div/>');	
-
-	$(leftOfCenter).attr({"class":"leftOfCenter"});
-
-	var rightOfCenter = $('<div/>');
-
-	$(rightOfCenter).attr({"class":"rightOfCenter"});
-
-	var rightBottomOfCenter = $('<div/>');
-
-	$(rightBottomOfCenter).attr({"class":"rightBottomOfCenter"});
-
-	$('#centerDiv').append(leftOfCenter,rightOfCenter,rightBottomOfCenter);
-
-	$('.leftOfCenter').append("<div class='titleMenu' id='titleMenuID'>"
-
-		+ "<div class='createButton'>+</div></div>"
-
-		+ "<div class='newProjectCreateDiv'><ul id='menu'></ul></div>");
-
-	//$('.rightOfCenter').append("Thisisrightofcenterpage.Welcomefromthispage..Welcomefromthispage..Welcomefromthispage..Welcomefromthispage.HelloHowAreyouAreyouOKWhatareyoudoingnowWhatareyoudoingnowWhatareyoudoingnow");
-
-	//$('.rightBottomOfCenter').append("this is a asfok afoa asfj afsjf afkajfal ljafa oijfa oijfa ijafa oifjajwfaageagaegageaggawtregeagbeagae oiajfka aiwjfda aoiwjfaiowf alijwdoiawf awifjwaoif <br>ijsef<br>ekl<br>ojef<br>kf<br>kjoae<br>");
-
-	var counter=0;
-	
 	$('.createButton').click(function(){
 
-		var newTextBoxDiv = $('<div/>').attr("id", "TextBoxDiv");		
+		var newTextBoxDiv = $('<div/>').attr("id", "textBoxID");		
 
 		newTextBoxDiv.after().html('<form action=""><input type="text" id="textbox"></form>');			
 
-		if($('#TextBoxDiv').length==0){
+		if($('#textBoxID').length==0){
 
-		//if($("#textbox").val()==null){
-
-			$('.newProjectCreateDiv').append(newTextBoxDiv);
-
-			counter++;
+			$('.newProjectCreate').append(newTextBoxDiv);
 
 			$('#textbox').keydown(function() {
 
@@ -152,16 +59,18 @@ function leftAndRightCreateDiv(){
 
 					} else {
 
-						var li = $('<li/>').appendTo('#menu');
+						//var div =$('<div/>').appendTo('#tree').attr({"class":"listdiv"});
 
-						$('<a />').text(message).attr('href', message).appendTo(li);
+						//var ul = $('<ul/>').appendTo('.newProjectCreateDiv').attr({"id":"tree"});	
 
-						$('#TextBoxDiv').remove( );
+						//var spans = $('<span/>').appendTo('#tree');
+
+						var li = $('<li/>').appendTo('#treeID').text(message);						
 						
-						//var sub_ul = $('<ul/>').appendTo(li);
+						//$('<a />').text(message).attr('href', "#").appendTo(li);
 
-						//newTextBoxDiv.after().html(message);
-
+						$('#textBoxID').remove( );
+						
 					}
 
 					return false;
@@ -171,6 +80,32 @@ function leftAndRightCreateDiv(){
 
 		}
 
+		$('#minusID').click(function(){
+			
+			if($('#minusID').text()=='- -'){
+
+				$('#treeID li').hide("fast", function(){
+
+					$('#minusID').text('++');
+
+				});
+
+			}else{
+
+				$('#treeID li').show("fast", function(){
+
+					$('#minusID').text('- -');
+
+				});
+
+			}
+
+		});	
+
+		 $( function() {
+    $( "#treeID" ).selectable();
+  } );
+
 	});
 
-}
+});
