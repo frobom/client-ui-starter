@@ -106,6 +106,27 @@
   var headerText = 0;
   var html;
 
+  $(document).delegate('tr','contextmenu',function(event) {
+    row = $(this);
+    //$(this).selectable();
+  });
+
+  $(document).delegate('td','contextmenu',function(event) {
+    currentColumn = $(this).parent().children().index($(this));
+    console.log('currentColumn: ' + currentColumn);
+    
+    var text = $("#header").find('th').eq(currentColumn).text();      
+    headerText = parseInt(text) || 0;
+  });
+
+
+  // $('table').on('contextmenu', 'tr', function(e) {
+  //       row = $(this);                
+
+  //       console.log("row : " + row.html());
+  //       console.log("row : " + row);        
+  //   });
+
   /**
    * Initialise our application's code.
    */
@@ -116,7 +137,6 @@
     resizeListener();     
 
   }
-
 
 
   /**
@@ -136,27 +156,7 @@
       }
     });
   }
-
-  $(function() {
-    $('table').on('contextmenu', 'tr', function(e) {
-        e.preventDefault();
-        row = $(this);                
-
-        console.log("row : " + row.html());
-        console.log("row : " + row);        
-    });
-
-    $('table').on('contextmenu', 'td', function(){
-      currentColumn = $(this).parent().children().index($(this));
-      console.log('currentColumn: ' + currentColumn);
-      
-      var text = $("#header").find('th').eq(currentColumn).text();      
-      headerText = parseInt(text) || 0;
-      
-      console.log('Get Header text: ' + headerText);
-  });
   
-});
 
   /**
    * Listens for click events.
@@ -275,15 +275,12 @@
       addColumn(currentColumn, 'after', headerText);
     }
     else if (link.getAttribute("data-action") == "Delete Row") {
-      alert("row.index() : " + row.index());
       if (row.index() != -1) {
         updateRowHeaders();
       }
       row.remove();      
     }
      else if (link.getAttribute("data-action") == "Delete Column") {
-
-      //alert("last cell index : " + $("table tr td:last-child").index());
 
       if (currentColumn != $("table tr td:last-child").index()) {
         
@@ -396,14 +393,14 @@ function addNewColumnHeader(afterOrBefore, currentColumn, headerText, insertedHe
   
   if (afterOrBefore=='before') {
     
-    $('<th>' + headerText +'</th>').insertBefore($(header[currentColumn]));
+    $('<th class="task">' + headerText +'</th>').insertBefore($(header[currentColumn]));
     $(header[currentColumn]).text(++headerText);
     return $(header[currentColumn]);      
   }
   else {
 
     //alert("headerText in addNewColumnHeader : " + headerText);
-    $('<th>' + headerText +'</th>').insertAfter($(header[currentColumn]));
+    $('<th class="task">' + headerText +'</th>').insertAfter($(header[currentColumn]));
     return $(header[currentColumn]).next();
   }
 }
@@ -485,34 +482,25 @@ function addActions(json, colIndex, startIndex, table) {
 }
 
 function addRules(json, colIndex, conditionRowsCount, table){
-  var colsCount = table.rows[0].cells.length;
+var colsCount = table.rows[0].cells.length;
 console.log("colsCount : " + colsCount);
 
 for (colIndex; colIndex < colsCount; colIndex++) {
 
      var rule = {
-      rule : []
-     };
-
-     var conditions = {
-        conditions : []
-     };
-
-     var actions = {
-        actions : []
+      conditions : [],
+      actions : []
      };
 
     for (var i = 1; i <= conditionRowsCount; i++) {
-      conditions.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
+      rule.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
     }    
 
     for (var i = conditionRowsCount+1; i < $( "#dtTable tr" ).length; i++) {
 
-      actions.actions.push(table.rows[i].cells[colIndex].children[0].value);
+      rule.actions.push(table.rows[i].cells[colIndex].children[0].value);
     }
-
-    rule.rule.push(conditions);
-    rule.rule.push(actions);
+    
     json.rules.push(rule);
     //console.log(JSON.stringify(rule));
   }
