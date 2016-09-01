@@ -12,9 +12,9 @@ $(document).ready( function() {
 
 			$("#rightID").css({bottom:0, right: 0,width:"5%", height:"25px",position:'absolute'});
 
-			$(".center").css({width:"84.5%"});
+			$(".center").css({width:"86%"});
 
-			$(".bottomOfCenter").css({width:"84.5%"});
+			$(".bottomOfCenter").css({width:"86%"});
 
 		}
 
@@ -26,9 +26,9 @@ $(document).ready( function() {
 
 			$("#rightID").css({right:0,height:'100%',width:'15%',position:'absolute'});
 
-			$(".center").css({width:" 69.5%"});	
+			$(".center").css({width:" 71%"});	
 
-			$(".bottomOfCenter").css({width:"69.5%"});
+			$(".bottomOfCenter").css({width:"71%"});
 		}	
 
 	});
@@ -45,9 +45,13 @@ $(document).ready( function() {
 
 		if($('#textBoxID').length==0){
 
+			$('#treeID li').show();
+
+			$('#minusID').text('- -');
+
 			$('.newProjectCreate').append(newTextBoxDiv);
 
-			$('#textbox').keydown(function() {
+			$('#textbox').keydown(function(event) {
 
 				var message = $("#textbox").val();
 
@@ -63,7 +67,7 @@ $(document).ready( function() {
 
 						//var ul = $('<ul/>').appendTo('.newProjectCreateDiv').attr({"id":"tree"});	
 
-						//var spans = $('<span/>').appendTo('#tree');
+						//var spans = $('<span/>').appendTo('#treeID').attr({"class":"context-menu-one"});
 
 						var li = $('<li/>').appendTo('#treeID').text(message);						
 						
@@ -102,10 +106,12 @@ $(document).ready( function() {
 
 		});	
 
-		 $( function() {
-    $( "#treeID" ).selectable();
-  } );
-
 	});
+
+});
+
+$( function() {
+
+	$( "#treeID" ).selectable();
 
 });
