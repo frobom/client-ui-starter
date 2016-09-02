@@ -105,6 +105,7 @@
   var currentColumn;
   var headerText = 0;
   var html;
+  var fileName;
 
   $(document).delegate('tr','contextmenu',function(event) {
     row = $(this);
@@ -119,13 +120,12 @@
     headerText = parseInt(text) || 0;
   });
 
+  $("#treeID").delegate('li','click',function(event) {
+    $('#centerID').empty();
+      fileName = $(this).text();
 
-  // $('table').on('contextmenu', 'tr', function(e) {
-  //       row = $(this);                
+  });
 
-  //       console.log("row : " + row.html());
-  //       console.log("row : " + row);        
-  //   });
 
   /**
    * Initialise our application's code.
@@ -399,7 +399,6 @@ function addNewColumnHeader(afterOrBefore, currentColumn, headerText, insertedHe
   }
   else {
 
-    //alert("headerText in addNewColumnHeader : " + headerText);
     $('<th class="task">' + headerText +'</th>').insertAfter($(header[currentColumn]));
     return $(header[currentColumn]).next();
   }
@@ -409,10 +408,7 @@ function updateOtherColumnHeader(insertedHeader, headerText) {
   var nextColHeader = insertedHeader.next();     
 
   while (nextColHeader.index() != -1) {
-    //alert("index of nextColHeader(old colum) : " + nextColHeader.index());
     nextColHeader.text(++headerText);
-    //alert("headerText for old column : " + headerText);
-    //alert("nextColHeader: " + nextColHeader.html());
     nextColHeader = nextColHeader.next();
   }
 }
@@ -459,6 +455,8 @@ var jsonObject = new Object();
 jsonObject.dt = json;
   
 console.log("jsonObject : " + JSON.stringify(jsonObject));
+
+$("#" + fileName).text(JSON.stringify(jsonObject));
   
 }
 
