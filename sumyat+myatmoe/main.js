@@ -1,8 +1,10 @@
 $.noConflict();
 
-$(document).ready( function() {
+$(document).ready( function() {	
 
-	
+	var fileId=0;
+
+	$("#json").hide();
 
 	$("#restoreButtonID").click(function(){
 
@@ -37,20 +39,35 @@ $(document).ready( function() {
 
 
 	$("#treeID").delegate('li','click',function(event) {
-    	drawDecisionTable();
+		$('#centerID').empty();
+    	drawDecisionTable($(this).text(), $(this).attr('id'));
 
 	});
 
-	function drawDecisionTable() {
+
+	function drawDecisionTable(fileName, id) {
+
+		$('#centerID').append('<h2 align="center">' + fileName + '</h2>');
 		$('#centerID').append('<table id="dtTable"></table>');
 		var table = $('table');    
 		table.append('<thead id="header"> <tr> <th></th> <th class="task"></th> </tr> </thead>');
-		table.append('<tbody id="condition"></tbody>');
+		//$('<img id="createdImage" src="some.jpg"/>').appendTo(document.body).css(style);
+		//$('<tbody id="condition"/>').appendTo(table).css("border-bottom", "3px solid blue");
+		//$("<style/>").text("#condition { border-bottom: 3px solid blue; }").appendTo("head");
+		table.append('<tbody id="condition" style="border-bottom: 3px solid blue;"></tbody>');		
 		table.append('<tbody id="action"></tbody>');
-
+		//$("<style/>").text("#condition { border-bottom: 3px solid blue; }").appendTo("head");
+		//$('head').append("< style > #condition { border-bottom: 3px solid blue;}  < /style >");
+		//$("head").append("<style/>").text("#condition { border-bottom: 3px solid blue; }");		
 
 		//var response = '{"dt":{"conditions":["condition2","condition3","condition1"],"actions":["action1","action2"],"rules":[{"conditions":["11","new","11"],"actions":["a1","a2"]},{"conditions":["22","new","22"],"actions":["b1","b2"]},{"conditions":["33","new","33"],"actions":["c1","c2"]}]}}';
 		var response = '{"dt":{"conditions":["c1","c2","c3"],"actions":["a1","a2", "a3"],"rules":[{"conditions":["rc1","rc2","rc3"],"actions":["ra1","ra2", "a3"]},{"conditions":["r3c1","r3c2","r3c3"],"actions":["r3a1","r3a2", "a3"]},{"conditions":["r2c1","r2c2","r2c3"],"actions":["r2a1","r2a2", "a3"]}]}}';
+		
+		if( $('#fileId').length )         // use this if you are using id to check
+		{
+     			// it exists
+		}
+		$("#json").append('<p id="' + fileName +'">' + response + '</p>');
 		//convert string to JSON
 		var dt = $.parseJSON(response);
 
@@ -61,6 +78,8 @@ $(document).ready( function() {
 		var headerRow = $('#header tr');
 		var conditionSection = $($('table').find('tbody')[0]);
 		var actionSection = $($('table').find('tbody')[1]);
+
+		//alert("conditionSection " + $('table').find('tbody')[0].html());
 
 		$.each(conditions, function(index, condition) {
 			$(conditionSection).append('<tr class="task"> <th>' + (index+1) +'</th><td><input type="text" value="' + condition +'"></td></tr>');		
@@ -90,11 +109,22 @@ $(document).ready( function() {
 			});
 		});
 
+		$("#condition").css("border", "10px solid red");
+		//$("#condition").css({ borderBottom: "2px solid #ff4141" });
+		//alert("condition : " + $("#condition").html());
+		//document.getElementById("condition").style.borderBottom = "15px solid blue";
+		// $("#condition").css("border", "10px solid red");
+		// alert("css of condition : " + $("#condition").css("border"));
+		//$("p").css("background-color", "yellow");
+
+		//$(".menu").css({ "border-bottom": "2px solid #ff4141": });
+		//$("table").css("border", "3px solid blue");
+
+		//$(conditionSection).css("borderBottom", "3px solid blue");
+		//alert($(conditionSection).html());
+		// $(this).attr('style', 'text-align: center');
 	}
 
-});
-
-$(document).ready( function() {
 
 	$('.createButton').click(function(){
 
@@ -107,6 +137,7 @@ $(document).ready( function() {
 			$('#treeID li').show();
 
 			$('#minusID').text('- -');
+
 
 			$('.newProjectCreate').append(newTextBoxDiv);
 
@@ -130,7 +161,9 @@ $(document).ready( function() {
 
 						//var spans = $('<span/>').appendTo('#treeID').attr({"class":"context-menu-one"});
 
-						var li = $('<li/>').appendTo('#treeID').text(message);
+						var li = $('<li id="'+ (++fileId) +'" />').appendTo('#treeID').text(message);
+
+						$('<div id="'+ fileId +'" />').appendTo('#centerID');
 						
 						//$('<a />').text(message).attr('href', "#").appendTo(li);
 
@@ -167,10 +200,7 @@ $(document).ready( function() {
 
 		});	
 
-	});
-
-
-	
+	});	
 
 });
 
