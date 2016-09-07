@@ -92,7 +92,7 @@ $(document).ready( function() {
 							};						
 							
 						var div = $('<div id="'+ divId +'" />').appendTo('#centerID').html('<h3>' + message + '</h3>');
-						alert("create div " + $(div).attr('id'));
+						
 						div = drawDecisionTable(message , div);
 
 						console.log("div " + $(div).html());
@@ -116,18 +116,14 @@ $(document).ready( function() {
 
 				console.log("#centerID in click event: " + $(centerDiv).html());
 
-
 		    	var id = $(this).attr('id');		    	
 		    	
 		    	for (var i=0; i<listAndDivArray.length; i++) {
 
 		    		if (listAndDivArray[i].listId == id) {
-		    			console.log("element in array " + $(listAndDivArray[i].divElement).html());
+		    			//console.log("element in array " + $(listAndDivArray[i].divElement).html());
 		    			$("#centerID").prepend($(listAndDivArray[i].divElement).show());
-		    			//$("#centerID").html($(listAndDivArray[i].divElement).html());
-		    			// arrayIndex = i;
-		    			// oldDivId = $(listAndDivArray[i].divElement).attr('id');
-		    			// console.log("oldDivId " + oldDivId);
+		    			
 		    			break;
 		    		}
 		    	}
@@ -172,16 +168,14 @@ $(document).ready( function() {
 		});	
 
 	
-	function drawDecisionTable(fileName, dtDiv) {
-
-		alert("div id in drawDecisionTable: " + $(dtDiv).attr('id'));
+	function drawDecisionTable(fileName, dtDiv) {		
 
 		var divId = "#" + $(dtDiv).attr('id');
 
 		$(dtDiv).append('<h2 align="center">' + fileName + '</h2>');
 		$(dtDiv).append('<table id="dtTable"></table>');
 		var table = $(divId +' table');
-		alert("table " + table.html());    
+		  
 		table.append('<thead id="header"> <tr> <th></th> <th class="task"></th> </tr> </thead>');
 		//$('<img id="createdImage" src="some.jpg"/>').appendTo(document.body).css(style);
 		//$('<tbody id="condition"/>').appendTo(table).css("border-bottom", "3px solid blue");
@@ -214,8 +208,7 @@ $(document).ready( function() {
 		$.each(conditions, function(index, condition) {
 			$(conditionSection).append('<tr class="task"> <th>' + (index+1) +'</th><td><input type="text" value="' + condition +'"></td></tr>');		
 		});
-
-		alert("conditionSection " + $(conditionSection).html());
+		
 
 		$.each(actions, function(index, action) {
 			$(actionSection).append('<tr class="task"> <th>' + (index+1) +'</th><td><input type="text" value="' + action +'"></td></tr>');		

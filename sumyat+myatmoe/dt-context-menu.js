@@ -1,11 +1,10 @@
 (function() {
   
-  "use strict";  
+  "use strict"; 
 
-  $("button").click(function(){
-        //alert("The button was clicked.");
-        createJsonObject();
-    });
+  $(document).on('click', 'a[name=save]', function(e) {
+      createJsonObject();
+  });
 
   //////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////
@@ -120,11 +119,7 @@
     headerText = parseInt(text) || 0;
   });
 
-  $("#treeID").delegate('li','click',function(event) {
-    $('#centerID').empty();
-      fileName = $(this).text();
-
-  });
+  
 
 
   /**
@@ -363,12 +358,7 @@
     html += "</tr>";
   }
 
-  // function addColumn() {
-  //   console.log("new Column number : " + ++colCount);
-  //   $("tr:first").append("<th>" + colCount + "</th>");
-  //   $("tr:not(:first)").append("<td class='task'> <input type='text'> </td>");
-  // }
-
+ 
 function addColumn(currentColumn,afterOrBefore,headerText) {
 
   var insertedHeader;
@@ -456,7 +446,7 @@ jsonObject.dt = json;
   
 console.log("jsonObject : " + JSON.stringify(jsonObject));
 
-$("#" + fileName).text(JSON.stringify(jsonObject));
+$("#dtTable").before('<p>' + JSON.stringify(jsonObject) + '</p>');
   
 }
 
@@ -480,15 +470,15 @@ function addActions(json, colIndex, startIndex, table) {
 }
 
 function addRules(json, colIndex, conditionRowsCount, table){
-var colsCount = table.rows[0].cells.length;
-console.log("colsCount : " + colsCount);
+  var colsCount = table.rows[0].cells.length;
+  console.log("colsCount : " + colsCount);
 
-for (colIndex; colIndex < colsCount; colIndex++) {
+  for (colIndex; colIndex < colsCount; colIndex++) {
 
-     var rule = {
-      conditions : [],
-      actions : []
-     };
+   var rule = {
+    conditions : [],
+    actions : []
+   };
 
     for (var i = 1; i <= conditionRowsCount; i++) {
       rule.conditions.push(table.rows[i].cells[colIndex].children[0].value);        
@@ -499,8 +489,8 @@ for (colIndex; colIndex < colsCount; colIndex++) {
       rule.actions.push(table.rows[i].cells[colIndex].children[0].value);
     }
     
-    json.rules.push(rule);
-    //console.log(JSON.stringify(rule));
+      json.rules.push(rule);
+      //console.log(JSON.stringify(rule));
   }
 }
  
